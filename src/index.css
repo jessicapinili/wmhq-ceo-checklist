@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================
+   VISUAL SYSTEM — change these tokens to restyle the app.
+   ========================================================== */
+:root {
+  /* Colour */
+  --c-bg: #f4dfe4;            /* blush page */
+  --c-surface: #ffffff;       /* cards */
+  --c-cream: #efe7dc;         /* secondary panels */
+  --c-ink: #3a1416;           /* text + bold borders */
+  --c-muted: #7a5a5c;         /* secondary text */
+  --c-line: #ead6da;          /* hairlines */
+  --c-soft: #e5c9cf;          /* shadow / track */
+  --c-blush: #ecc5ce;         /* pink chips + buttons */
+  --c-accent: #6f86a8;        /* slate blue labels */
+  --c-accent-soft: #e3e8f1;   /* slate chip */
+  --c-highlight: #fbe7a1;     /* yellow marker */
+  --c-success: #3f6b4f;
+  --c-success-soft: #e2efe5;
+  --c-danger: #a3323a;
+  --c-focus: #6f86a8;
+
+  /* Type */
+  --f-body: 'DM Sans', system-ui, sans-serif;
+  --f-display: 'DM Sans', system-ui, sans-serif;
+  --f-pixel: 'VT323', ui-monospace, monospace;
+
+  /* Shape */
+  --r-card: 22px;
+  --r-field: 12px;
+  --bw-bold: 2px;
+  --sh-card: 0 6px 0 var(--c-soft);
+  --sh-lift: 0 10px 0 var(--c-soft);
+}
+
+html, body { background: var(--c-bg); color: var(--c-ink); font-family: var(--f-body); }
+body { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+*:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; border-radius: 6px; }
+
+@layer components {
+  .card { @apply bg-surface border-bold border-ink rounded-card shadow-card; }
+  .label-caps { @apply text-xs font-semibold uppercase tracking-[0.18em] text-muted; }
+  .pixel { font-family: var(--f-pixel); letter-spacing: 0.04em; }
+  .field { @apply w-full rounded-field border-bold border-line bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-muted/60 transition-colors; }
+  .field:focus { @apply border-accent outline-none; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-2.5 text-sm font-semibold tracking-wide transition-transform active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-ink text-surface hover:opacity-90; }
+  .btn-pink { @apply btn bg-blush text-ink border-bold border-dashed border-ink hover:bg-[#e6b6c2]; }
+  .btn-ghost { @apply btn bg-transparent text-ink border-bold border-ink/20 hover:border-ink; }
+  .btn-danger { @apply btn bg-danger text-white hover:opacity-90; }
+  .chip { @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold; }
+  .marker { background: linear-gradient(transparent 8%, var(--c-highlight) 8%, var(--c-highlight) 92%, transparent 92%); padding: 0 .2em; }
+}
+
+@keyframes pop { 0% { transform: scale(1) } 40% { transform: scale(1.25) } 100% { transform: scale(1) } }
+.animate-pop { animation: pop .28s ease-out; }
+@keyframes glow { 0% { background: var(--c-success-soft) } 100% { background: transparent } }
+.animate-glow { animation: glow 1.1s ease-out; }
+@keyframes slidein { from { transform: translateX(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+.animate-slidein { animation: slidein .2s ease-out; }
+@media (prefers-reduced-motion: reduce) { .animate-pop, .animate-glow, .animate-slidein { animation: none; } }
