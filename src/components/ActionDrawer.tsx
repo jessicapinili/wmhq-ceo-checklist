@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Info, Sparkles, X } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Info, Maximize2, Minimize2, Sparkles, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { ACTIONS, PHASES, TIERS } from '../data/content'
 import { useStore } from '../store'
@@ -18,6 +18,9 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
   const allChecked = n === a.checklist.length
   const tier = state.profile.tier
   const [otherTiers, setOtherTiers] = useState(false)
+  // Side panel or full screen, like Notion. Remembered per browser.
+  const [expanded, setExpanded] = useState(() => { try { return localStorage.getItem('wmhq-drawer-expanded') === '1' } catch { return false } })
+  const toggleExpanded = () => setExpanded((v) => { try { localStorage.setItem('wmhq-drawer-expanded', v ? '0' : '1') } catch { /* ignore */ } return !v })
   const ref = useRef<HTMLDivElement>(null)
   const phase = PHASES.find((ph) => ph.id === a.phase)!
 
@@ -34,14 +37,20 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-ink/30" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div ref={ref} data-drawer role="dialog" aria-modal="true" aria-labelledby="drawer-title"
-        className="animate-slidein h-full w-full max-w-2xl overflow-y-auto border-l-bold border-ink bg-surface sm:rounded-l-card">
+        className={`animate-slidein h-full w-full overflow-y-auto bg-surface transition-[max-width] duration-200 ${expanded ? 'max-w-none' : 'max-w-2xl border-l-bold border-ink sm:rounded-l-card'}`}>
         {/* Sticky header */}
         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-line bg-surface/95 px-5 py-3 backdrop-blur sm:px-8">
           <SaveIndicator manual />
-          <button onClick={onClose} className="rounded-full p-2 hover:bg-bg" aria-label="Close action"><X size={22} /></button>
+          <div className="flex shrink-0 items-center gap-1">
+            <button onClick={toggleExpanded} className="hidden rounded-full p-2 hover:bg-bg sm:inline-flex" aria-pressed={expanded}
+              aria-label={expanded ? 'Show as side panel' : 'Expand to full screen'} title={expanded ? 'Show as side panel' : 'Expand to full screen'}>
+              {expanded ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+            </button>
+            <button onClick={onClose} className="rounded-full p-2 hover:bg-bg" aria-label="Close action" title="Close"><X size={22} /></button>
+          </div>
         </div>
 
-        <div className="space-y-8 px-5 pb-10 pt-6 sm:px-8">
+        <div className={`space-y-8 px-5 pb-10 pt-6 sm:px-8 ${expanded ? 'mx-auto max-w-3xl' : ''}`}>
           {/* 1–2. Title + outcome */}
           <header>
             <p className="pixel text-xl text-accent">PHASE {phase.number} · ACTION {String(a.number).padStart(2, '0')}</p>
