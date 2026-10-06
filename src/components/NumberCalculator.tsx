@@ -21,7 +21,7 @@ export function computeNumbers(state: AppState, actionId = 'a04') {
   let salesNeeded: number | null = null
   if (tier === 1) salesNeeded = 1
   if (tier === 2) salesNeeded = repeatSales && repeatSales > 0 ? Math.ceil(repeatSales) : null
-  // Tier 03 = collect her last 60 days' cash PLUS $10,000, so sales cover the full total.
+  // Tier 03 = collect her last 30 days' cash PLUS $10,000 during the challenge, so sales cover the full total.
   if (tier === 3) salesNeeded = price && price > 0 ? Math.ceil(((baseline ?? 0) + 10_000) / price) : null
   const ready = salesNeeded != null && rateN != null && rateN >= 1
   const peopleNeeded = ready ? Math.ceil(salesNeeded! * rateN!) : null
@@ -61,7 +61,7 @@ export default function NumberCalculator({ actionId }: { actionId: string }) {
             <NumberInput id="calc-price" currency value={price} onChange={(v) => setProfile({ offerPrice: v })} />
           </Field>
           {tier === 3 && (
-            <Field label="Your cash from the last 60 days" htmlFor="calc-base" help="Your baseline, pulled from Action 01.">
+            <Field label="Your cash from the last 30 days" htmlFor="calc-base" help="Your baseline, pulled from Action 01.">
               <NumberInput id="calc-base" currency value={baseline} onChange={(v) => setProfile({ baseline: v })} />
             </Field>
           )}
@@ -81,7 +81,7 @@ export default function NumberCalculator({ actionId }: { actionId: string }) {
           <p className="mt-3 rounded-2xl bg-blush/50 p-4 text-lg font-semibold">
             {tier === 1 && <>You need 1 sale{price ? <> at {fmtMoney(price)}</> : null}.</>}
             {tier === 2 && (salesNeeded ? <>{salesNeeded} sales{price ? <> at {fmtMoney(price)} = {fmtMoney(salesNeeded * price)}</> : null}.</> : 'Enter how many repeat sales you want.')}
-            {tier === 3 && (salesNeeded ? <>You need to collect {fmtMoney((baseline ?? 0) + 10_000)}: your last 60 days{baseline ? ` (${fmtMoney(baseline)})` : ''} plus $10,000. At {fmtMoney(price)}, that is {salesNeeded} sales.</> : 'Enter your price to see how many sales you need.')}
+            {tier === 3 && (salesNeeded ? <>You need to collect {fmtMoney((baseline ?? 0) + 10_000)}: your last 30 days{baseline ? ` (${fmtMoney(baseline)})` : ''} plus $10,000. At {fmtMoney(price)}, that is {salesNeeded} sales.</> : 'Enter your price to see how many sales you need.')}
           </p>
         )}
       </Step>

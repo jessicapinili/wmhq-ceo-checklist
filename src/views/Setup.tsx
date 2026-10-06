@@ -72,8 +72,8 @@ export default function Setup({ onDone }: { onDone: () => void }) {
           <TierPicker name="setup-tier" value={p.tier} onChange={(t) => set({ tier: t })} />
         </>}
         {step === 2 && <>
-          <H>What did you collect in the previous 60 days?</H>
-          <Field label="Previous 60-day cash baseline" htmlFor="s-base" help="Cash that actually landed in your account, not invoices or pending payments. Enter 0 if you haven't made a sale yet.">
+          <H>What did you collect in the previous 30 days?</H>
+          <Field label="Previous 30-day cash baseline" htmlFor="s-base" help="Cash that actually landed in your account, not invoices or pending payments. Enter 0 if you haven't made a sale yet.">
             <NumberInput id="s-base" currency value={p.baseline} onChange={(v) => set({ baseline: v })} placeholder="0" />
           </Field>
         </>}

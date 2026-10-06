@@ -25,7 +25,7 @@ export default function Settings({ onRequestTier, onImport }: { onRequestTier: (
             <p className="mb-1.5 text-sm font-semibold">Tier</p>
             <TierPicker name="settings-tier" value={p.tier} onChange={(t) => t !== p.tier && onRequestTier(t)} />
           </div>
-          <Field label="Previous 60-day cash baseline" htmlFor="st-base"><NumberInput id="st-base" currency value={p.baseline} onChange={(v) => setProfile({ baseline: v })} /></Field>
+          <Field label="Previous 30-day cash baseline" htmlFor="st-base"><NumberInput id="st-base" currency value={p.baseline} onChange={(v) => setProfile({ baseline: v })} /></Field>
           <Field label="Milestone" htmlFor="st-ms"><TextArea id="st-ms" value={p.milestone} onChange={(v) => setProfile({ milestone: v })} /></Field>
           {p.tier && p.milestone !== TIERS[p.tier].milestone && <button className="text-sm font-semibold underline" onClick={() => setProfile({ milestone: TIERS[p.tier!].milestone })}>Use the suggested {TIERS[p.tier].short} milestone</button>}
           <div className="grid gap-4 sm:grid-cols-2">

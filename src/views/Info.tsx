@@ -23,7 +23,7 @@ export default function Info() {
           <p className="mt-3 text-muted">Everyone follows the same 16 actions. Your tier changes what success means and the specific requirement inside each action. You can change tiers in Settings without losing checklist progress.</p>
         </Block>
         <Block title="What counts as cash collected">
-          <p>Cash collected is money that has actually landed in your account during the challenge. Unpaid invoices, pending payments, pledges and refunds do not count. For Tier 03, compare it with the cash you collected in the 60 days before your start date.</p>
+          <p>Cash collected is money that has actually landed in your account during the challenge. Unpaid invoices, pending payments, pledges and refunds do not count. For Tier 03, your target is the cash you collected in the 30 days before your start date, plus $10,000.</p>
         </Block>
         <Block title="The four phases">
           <ol className="space-y-3">

@@ -18,7 +18,7 @@ export function endFor(start: string): string {
 export const TIERS: Record<TierId, { name: string; short: string; description: string; milestone: string }> = {
   1: { name: 'First Sale', short: 'Tier 01', description: 'Make one new paid sale during the challenge.', milestone: 'Make one new paid sale' },
   2: { name: 'Repeat Sales', short: 'Tier 02', description: 'Make three paid sales of the same offer during the challenge.', milestone: 'Make three paid sales of the same offer' },
-  3: { name: '+$10K', short: 'Tier 03', description: 'Collect $10,000 more cash during the challenge than during the previous 60 days.', milestone: 'Collect $10,000 more than my previous 60-day baseline' },
+  3: { name: '+$10K', short: 'Tier 03', description: 'Collect $10,000 more cash during the 60-day challenge than you collected in the previous 30 days.', milestone: 'Collect $10,000 more than my previous 30-day baseline' },
 }
 
 export const PHASES: { id: PhaseId; number: string; name: string; days: [number, number]; intro: string }[] = [
@@ -54,7 +54,7 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
   why: 'Your tier determines what success means for this challenge. A clear milestone gives every action a purpose and makes it possible to measure your progress.',
   checklist: [
     'Choose your tier',
-    'Record how much cash you collected in the previous 60 days',
+    'Record how much cash you collected in the previous 30 days',
     'Write your 60-day milestone',
     'Choose the offer you will sell',
     'Enter the price of the offer',
@@ -68,11 +68,11 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
     // {end} is replaced with the member's own end date.
     1: 'I will make my first paid sale by {end}.',
     2: 'I will make three paid sales of the same offer by {end}.',
-    3: 'I will collect $10,000 more cash than my previous 60-day baseline by {end}.',
+    3: 'I will collect $10,000 more cash than my previous 30-day baseline by {end}.',
   },
   fields: [
     { id: 'tier', label: 'Selected tier', type: 'tier', bind: 'tier' },
-    { id: 'baseline', label: 'Previous 60-day cash baseline', type: 'currency', bind: 'baseline', help: 'Cash that actually landed in your account in the 60 days before the challenge.' },
+    { id: 'baseline', label: 'Previous 30-day cash baseline', type: 'currency', bind: 'baseline', help: 'Cash that actually landed in your account in the 30 days before the challenge.' },
     { id: 'milestone', label: 'Personal milestone', type: 'textarea', bind: 'milestone' },
     { id: 'offer', label: 'Primary offer', type: 'text', bind: 'offer', placeholder: 'e.g. 1:1 Brand Strategy Intensive' },
     { id: 'price', label: 'Offer price', type: 'currency', bind: 'offerPrice' },
@@ -83,7 +83,7 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
     { id: 'postLink', label: 'Community post link', type: 'url', placeholder: 'https://' },
     { id: 'extra', label: 'Additional notes', type: 'textarea' },
   ],
-  proof: ['Selected tier', 'Previous 60-day baseline', 'Personal milestone', 'Screenshot or confirmation of CEO time blocked in the calendar'],
+  proof: ['Selected tier', 'Previous 30-day baseline', 'Personal milestone', 'Screenshot or confirmation of CEO time blocked in the calendar'],
   resources: [],
 }
 
