@@ -29,7 +29,7 @@ const SEEDS: Seed[] = [
   [8, 'execute', 'Turn On Your Sales Engine', 'Create a repeatable rhythm that brings people towards the offer.', 30],
   [9, 'sell', 'Run a Focused Sales Sprint', 'Pick a window, give people a reason to decide now, and tell people the offer is open.', 34],
   [10, 'sell', 'Catch the Sabotage', 'Spot the fear and patterns that stopped the sale, using what actually happened.', 38],
-  [11, 'sell', 'Run the Sales Conversations', 'Move each buyer to a clear decision, without discounting, over-explaining or letting them go quiet.', 42],
+  [11, 'sell', 'Turn Maybes Into Yes', 'Answer buyers’ worries and show them the cost of waiting, without letting your pattern take over.', 42],
   [12, 'sell', 'Follow Up and Expand', 'Recover undecided sales and create the next opportunity.', 45],
   [13, 'optimise', 'Measure', 'Find where the sales path is working and where it is leaking.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Improve the weakest point using one controlled change.', 53],
@@ -767,6 +767,7 @@ You can't fix a pattern you can't see. This quiz uses what you actually did in y
     { id: 't3Review', label: 'What you found in your last 5 sales or quotes', type: 'textarea', tiers: [3], help: 'Did you discount, over-explain, or let anyone go quiet?' },
     { id: 't3Cost', label: 'What it cost you in total', type: 'currency', tiers: [3] },
     { id: 't3Fix', label: 'How you will fix it on your very next sale', type: 'textarea', tiers: [3] },
+    { id: 'next', label: 'Next', type: 'notice', notice: { when: [], text: 'You know your pattern now. Keep it in mind, because it will try to show up when buyers push back. Next, you will learn how to answer their worries and show them the cost of waiting.' } },
   ],
   proof: [
     'Post your pattern name, the action you took, and what happened. You don’t need to share your fears, only the pattern, the action and the result.',
