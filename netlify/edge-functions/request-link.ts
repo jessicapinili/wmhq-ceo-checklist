@@ -1,7 +1,10 @@
 // Login form submits here. Emails a 15-minute link only if the email is on the member list.
 // The response is identical either way so the page never reveals who is a member.
 import { cleanName, env, LINK_TTL_MS, normalizeEmail, signToken } from "../lib/auth.ts";
+import { getStore } from "@netlify/blobs";
 import { hasAccess } from "../lib/members.ts";
+
+const COOLDOWN_MS = 60 * 1000; // at most one login email per address per minute
 
 const DEFAULT_FROM = "Woman Mastery HQ <login@womanmasteryhqportal.com>";
 
@@ -64,7 +67,13 @@ export default async (req: Request) => {
   if (!email) return Response.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
 
   try {
+    // Quietly skip if a link was sent to this address in the last minute, so nobody can flood an inbox.
+    const cooldown = getStore({ name: "login-link-cooldown", consistency: "strong" });
+    const last = Number(await cooldown.get(email)) || 0;
+    if (Date.now() - last < COOLDOWN_MS) return Response.json({ ok: true });
+
     if (await hasAccess(email)) {
+      await cooldown.set(email, String(Date.now()));
       const token = await signToken("link", { e: email, fn: firstName, ln: lastName, exp: Date.now() + LINK_TTL_MS });
       const link = new URL(`/api/verify?t=${encodeURIComponent(token)}`, req.url).toString();
       await sendLoginEmail(email, link, firstName);

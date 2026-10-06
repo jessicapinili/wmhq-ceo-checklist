@@ -451,9 +451,9 @@ Both need follow-up. Most people buy after the second or third message, not the 
     'Test the full path, then promote your way in',
   ].map((label, i) => ({ id: `a07-c${i + 1}`, label })),
   tierRequirements: {
-    1: 'Use a one-step path unless your offer is over $1,000. Write the exact reply you will send when someone DMs or books, and 2 follow-up messages for anyone who goes quiet.',
-    2: 'Build a path for past buyers that skips the start. They already trust you, so go straight to the offer. Write the message you will send to past buyers, and 2 follow-ups.',
-    3: 'Find where your current path leaks. Write down the step where most people drop off: no reply, no booking, no payment, or no follow-up. Fix that one step first, and write 3 follow-up messages.',
+    1: 'Use a one-step path unless your offer is over $1,000. Write the exact reply you will send when someone DMs or books, and the follow-up messages in your workspace for anyone who goes quiet.',
+    2: 'Build a path for past buyers that skips the start. They already trust you, so go straight to the offer. Write the message you will send to past buyers, and the follow-up messages in your workspace.',
+    3: 'Find where your current path leaks. Write down the step where most people drop off: no reply, no booking, no payment, or no follow-up. Fix that one step first, and write all your follow-up messages, including the extra Tier 03 one.',
   },
   help: {
     inWmhq: { line: 'Open the Create A Landing Page That Converts resource in CEO Cash, inside the WMHQ Vault.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
@@ -865,8 +865,7 @@ Your buyers are the other half of the money. Someone who just bought from you al
     3: 'Create one next-step offer worth more than what they bought, such as a bigger package, a bundle, ongoing support or a VIP version. Offer it to every buyer from this challenge, and ask each one for a referral.',
   },
   help: {
-    // TODO: Jess to confirm the exact training/tool and module name.
-    inWmhq: { line: 'Open the follow-up training in the WMHQ Vault. It shows you how to follow up without feeling pushy and turn buyers into repeat clients or customers.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
+    inWmhq: { line: 'Open the training Your Relationship with Sales. Train your relationship with sales so selling feels safer, simpler, and easier to repeat.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
     notInWmhq: {
       line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
       prompt: `I sell [your offer] at [price]. It is a [product / service / info product]. My buyer is: [buyer sentence from Action 02]. Their biggest worry is: [worry from Action 11]. I talk to buyers through [DM / email / text / in person].
