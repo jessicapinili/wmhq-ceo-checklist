@@ -15,7 +15,7 @@ Member dashboard for the 60-day challenge. React + TypeScript + Tailwind (Vite),
 | `RESEND_API_KEY` | yes | Resend API key |
 | `SESSION_SECRET` | yes | Long random string, unique to this site |
 | `ADMIN_EMAILS` | no | Comma-separated. Defaults to jessicampinili@gmail.com |
-| `ADMIN_PASSWORD` | yes, for /admin/ | Password for the admin login (only works with an admin email) |
+| `ADMIN_PASSWORD` or `ADMIN_KEY` | yes, for /admin/ | Password for the admin login (only works with an admin email) |
 | `MAIL_FROM` | no | Defaults to `Woman Mastery HQ <login@womanmasteryhqportal.com>` |
 
 ## Local development
