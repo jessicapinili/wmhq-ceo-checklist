@@ -27,7 +27,7 @@ const SEEDS: Seed[] = [
   [6, 'execute', 'Create One Way In', 'Give the right buyer one reason to raise her hand.', 22],
   [7, 'execute', 'Build the Sales Path', 'Give an interested buyer a clear way to say yes.', 26],
   [8, 'execute', 'Turn On Your Sales Engine', 'Create a repeatable rhythm that brings people towards the offer.', 30],
-  [9, 'sell', 'Run a Focused Sales Push', 'Pick a window, give people a reason to decide now, and tell people the offer is open.', 34],
+  [9, 'sell', 'Run a Focused Sales Sprint', 'Pick a window, give people a reason to decide now, and tell people the offer is open.', 34],
   [10, 'sell', 'Catch the Sabotage', 'Spot the fear and patterns that stopped the sale, using what actually happened.', 38],
   [11, 'sell', 'Run the Sales Conversations', 'Move each buyer to a clear decision, without discounting, over-explaining or letting them go quiet.', 42],
   [12, 'sell', 'Follow Up and Expand', 'Recover undecided sales and create the next opportunity.', 45],
@@ -628,11 +628,11 @@ Content brings people to you. Reaching out brings people to you faster. You need
 
 const ACTION_09: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
   placeholder: false,
-  outcome: 'You have a short, focused sales push with a start date, an end date, and a real reason for people to buy now.',
+  outcome: 'You have a short, focused sales sprint with a start date, an end date, and a real reason for people to buy now.',
   description: 'Give buyers a clear reason to make a decision now. Pick a short sprint window, tell people your offer is open, and message the people most likely to buy.',
-  why: `When an offer is always available, people put off deciding. A focused push gives them a reason to decide now, and gives you a set time to sell hard, then rest.
+  why: `When an offer is always available, people put off deciding. A focused sprint gives them a reason to decide now, and gives you a set time to sell hard, then rest.
 
-A push is not a big launch. You don't need a webinar, ads or a team. It's a set number of days where your offer is the main thing you talk about, with a real reason to act before it closes.
+A sprint is not a big launch. You don't need a webinar, ads or a team. It's a set number of days where your offer is the main thing you talk about, with a real reason to act before it closes.
 
 The reason must be true. Fake deadlines break trust. Real reasons work better anyway, such as limited spots, a bonus that ends, a price going up, or a season.`,
   checklist: [
@@ -646,12 +646,12 @@ The reason must be true. Fake deadlines break trust. Real reasons work better an
     'Close your sprint on the end date',
   ].map((label, i) => ({ id: `a09-c${i + 1}`, label })),
   tierRequirements: {
-    1: 'Keep it to 7 days. Your warm list needs at least 15 names: people who match your buyer, people who have engaged with your content, and people you already know. Message every single one during the push.',
-    2: 'Open the push to past buyers first, with 2 days of early access before anyone else. Every past buyer on your list gets a personal message, not a group post.',
-    3: 'Set a cash target for this push only, as a share of your $10K. Plan one moment in the push that drives the most sales, like a live session, a bonus deadline or doors closing. Track your cash daily during the push.',
+    1: 'Keep it to 7 days. Your warm list needs at least 15 names: people who match your buyer, people who have engaged with your content, and people you already know. Message every single one during the sprint.',
+    2: 'Open the sprint to past buyers first, with 2 days of early access before anyone else. Every past buyer on your list gets a personal message, not a group post.',
+    3: 'Set a cash target for this sprint only, as a share of your $10K. Plan one moment in the sprint that drives the most sales, like a live session, a bonus deadline or doors closing. Track your cash daily during the sprint.',
   },
   help: {
-    inWmhq: { line: 'Open Launch Campaigns in your Personal Portal. It walks you through planning and running your push step by step.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
+    inWmhq: { line: 'Open Launch Campaigns in your Personal Portal. It walks you through planning and running your sprint step by step.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
     notInWmhq: {
       line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
       prompt: `My offer is: [one-liner from Action 03]. My buyer is: [buyer sentence from Action 02]. My price is [price]. I want to run a short sales sprint.
@@ -668,7 +668,9 @@ Then write my sprint plan:
 Before: 1 post and 1 message to tell people something is coming
 Open: 1 post and 1 message to announce the offer
 Middle: 1 post and 1 message that shares a result or answers a worry
-Close: 1 post and 1 message for the last day`,
+Close: 1 post and 1 message for the last day
+
+Short, human, no hype, no fake urgency. Each ends with one clear next step.`,
       bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
       joinLabel: 'Join WMHQ',
       joinUrl: JOIN_WMHQ_URL,
@@ -701,10 +703,11 @@ Close: 1 post and 1 message for the last day`,
     { id: 'reason', label: 'Finish this sentence: “Buy before [end date] because…”', type: 'textarea', placeholder: 'Buy before 30 November because only 5 spots are open before Christmas.',
       help: 'Example: “Buy before 30 November because only 5 spots are open before Christmas.”', group: { title: 'Block 3: Your reason to buy now' } },
     // Block 4
-    { id: 'warmList', label: 'Your warm list', type: 'tracklist', placeholder: 'Add a name',
-      help: 'People who match your buyer, people who have engaged with your content, past buyers, and people you already know. Tick each one once you have messaged them.',
+    { id: 'warmList', label: 'Your warm list', type: 'warmtracker',
+      help: 'Start with people who have bought before, asked about your offer, or engaged with your content. Only add first names or initials. This saves to your browser.',
+      options: ['Past buyer', 'Warm contact', 'Engaged follower'],
       minItems: { 1: { n: 15, text: 'Tier 01 needs at least 15 names.' } },
-      group: { title: 'Block 4: Your warm list', intro: 'Messaging past buyers and warm contacts is part of the sprint, not a separate step.' } },
+      group: { title: 'Block 4: Your warm list tracker', intro: 'Messaging past buyers and warm contacts is part of the sprint, not a separate step.' } },
     // Block 5
     { id: 'beforePost', label: 'What I will post', type: 'textarea', group: { title: 'Block 5: Your sprint plan', intro: 'Before (1 to 2 days): tell people something is coming.' } },
     { id: 'beforeSend', label: 'What I will send', type: 'textarea' },

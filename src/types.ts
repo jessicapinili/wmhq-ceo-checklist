@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice' | 'time' | 'multi' | 'rhythm' | 'tracklist' | 'duration' | 'sprintsummary'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice' | 'time' | 'multi' | 'rhythm' | 'tracklist' | 'warmtracker' | 'duration' | 'sprintsummary'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'

@@ -218,7 +218,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
     }
     if (f.type === 'sprintsummary') {
       const v = (k: string) => String(p.fields[k] ?? '').trim()
-      const list = Array.isArray(p.fields.warmList) ? (p.fields.warmList as string[]).filter((x) => x.replace(/^\[x\] /, '').trim()) : []
+      const list = parseWarm(p.fields.warmList).filter((r) => r.name.trim())
       const days = v('start') && v('end') ? daysBetween(v('start'), v('end')) + 1 : null
       const lines = [
         [v('type') || 'Sprint type not chosen', v('start') && v('end') ? `${fmtDate(v('start'))} to ${fmtDate(v('end'))}` : 'Dates not set', days && days > 0 ? `${days} days` : ''].filter(Boolean).join(' · '),
@@ -285,6 +285,43 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
               ))}
             </ul>
             <ListInput id={fid} value={[]} placeholder={f.placeholder} onChange={(added) => save([...rows, ...added.map((n) => ({ on: false, name: n }))])} />
+            {min && rows.length < min.n && <p className="rounded-xl bg-highlight/70 p-3 text-sm font-medium">{min.text} ({rows.length} so far)</p>}
+          </div>
+        ); break
+      }
+      case 'warmtracker': {
+        const rows = parseWarm(raw)
+        const save = (r: WarmRow[]) => write(r.map((x) => JSON.stringify(x)))
+        const upd = (i: number, patch: Partial<WarmRow>) => save(rows.map((x, j) => (j === i ? { ...x, ...patch } : x)))
+        const count = (k: 'messaged' | 'replied' | 'bought') => rows.filter((r) => r[k]).length
+        const min = tier ? f.minItems?.[tier] : undefined
+        const ticks = [['messaged', 'Messaged'], ['replied', 'Replied'], ['bought', 'Bought']] as const
+        input = (
+          <div className="space-y-3">
+            <p className="font-semibold" aria-live="polite">{rows.length} {rows.length === 1 ? 'name' : 'names'} · {count('messaged')} messaged · {count('replied')} replied · {count('bought')} bought</p>
+            <div className="overflow-hidden rounded-2xl border-bold border-line">
+              <div className="hidden grid-cols-[1fr_1.3fr_repeat(3,4.5rem)_2.5rem] gap-2 bg-bg px-3 py-2 text-sm font-semibold sm:grid">
+                <span>Name</span><span>Who they are</span>{ticks.map(([, l]) => <span key={l} className="text-center">{l}</span>)}<span />
+              </div>
+              {rows.length === 0 && <p className="px-3 py-4 text-sm text-muted">No names yet. Add your first one below.</p>}
+              {rows.map((r, i) => (
+                <div key={i} className="grid grid-cols-2 items-center gap-2 border-t border-line px-3 py-2 first:border-t-0 sm:grid-cols-[1fr_1.3fr_repeat(3,4.5rem)_2.5rem] sm:first:border-t">
+                  <input aria-label={`Name ${i + 1}`} className="field !py-2" value={r.name} placeholder="First name" onChange={(e) => upd(i, { name: e.target.value })} />
+                  <select aria-label={`Who ${r.name || 'they'} are`} className="field !py-2" value={r.who} onChange={(e) => upd(i, { who: e.target.value })}>
+                    <option value="">Choose</option>{f.options?.map((o) => <option key={o}>{o}</option>)}
+                  </select>
+                  {ticks.map(([k, l]) => (
+                    <label key={k} className="flex items-center gap-2 text-sm sm:justify-center">
+                      <input type="checkbox" className="h-5 w-5 accent-[var(--c-ink)]" checked={r[k]} onChange={(e) => upd(i, { [k]: e.target.checked })} />
+                      <span className="sm:sr-only">{l}</span>
+                    </label>
+                  ))}
+                  <button type="button" className="justify-self-end rounded-full p-2 text-muted hover:bg-bg hover:text-danger" aria-label={`Remove ${r.name || 'row'}`}
+                    onClick={() => save(rows.filter((_, j) => j !== i))}><X size={16} /></button>
+                </div>
+              ))}
+            </div>
+            <button type="button" className="btn-ghost !px-4 !py-2" onClick={() => save([...rows, { name: '', who: '', messaged: false, replied: false, bought: false }])}>+ Add a name</button>
             {min && rows.length < min.n && <p className="rounded-xl bg-highlight/70 p-3 text-sm font-medium">{min.text} ({rows.length} so far)</p>}
           </div>
         ); break
@@ -426,4 +463,14 @@ function SprintSummary({ title, lines }: { title: string; lines: string[] }) {
       }}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy summary</>}</button>
     </section>
   )
+}
+
+interface WarmRow { name: string; who: string; messaged: boolean; replied: boolean; bought: boolean }
+/** Warm list rows are saved as JSON strings in the field's list. */
+function parseWarm(raw: unknown): WarmRow[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((x) => {
+    try { const r = JSON.parse(x); if (r && typeof r === 'object') return { name: '', who: '', messaged: false, replied: false, bought: false, ...r } } catch { /* plain text */ }
+    return { name: String(x).replace(/^\[x\] /, ''), who: '', messaged: String(x).startsWith('[x] '), replied: false, bought: false }
+  })
 }
