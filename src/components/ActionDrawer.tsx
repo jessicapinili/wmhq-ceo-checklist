@@ -12,6 +12,7 @@ import RecoverRepeat from './RecoverRepeat'
 import MeasureWorkspace from './MeasureWorkspace'
 import BottleneckWorkspace from './BottleneckWorkspace'
 import DoubleDownWorkspace from './DoubleDownWorkspace'
+import CeoReviewWorkspace from './CeoReviewWorkspace'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
@@ -44,9 +45,9 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-ink/30" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div ref={ref} data-drawer role="dialog" aria-modal="true" aria-labelledby="drawer-title"
-        className={`animate-slidein h-full w-full overflow-y-auto bg-surface transition-[max-width] duration-200 ${expanded ? 'max-w-none' : 'max-w-2xl border-l-bold border-ink sm:rounded-l-card'}`}>
+        className={`print-area animate-slidein h-full w-full overflow-y-auto bg-surface transition-[max-width] duration-200 ${expanded ? 'max-w-none' : 'max-w-2xl border-l-bold border-ink sm:rounded-l-card'}`}>
         {/* Sticky header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-line bg-surface/95 px-5 py-3 backdrop-blur sm:px-8">
+        <div className="no-print sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-line bg-surface/95 px-5 py-3 backdrop-blur sm:px-8">
           <SaveIndicator manual />
           <div className="flex shrink-0 items-center gap-1">
             <button onClick={toggleExpanded} className="hidden rounded-full p-2 hover:bg-bg sm:inline-flex" aria-pressed={expanded}
@@ -97,9 +98,10 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           </Section>
 
           {/* 5. Tier requirement */}
+          {a.tierRequirements && (() => { const req = a.tierRequirements; return (
           <Section title={tier ? `Your ${TIERS[tier].short} requirement` : 'Tier requirement'}>
             {a.tierIntro && <p className="mb-3 text-muted">{a.tierIntro}</p>}
-            {tier ? <p className="rounded-2xl border-bold border-ink bg-blush/50 p-4 text-lg font-semibold">{a.tierRequirements[tier].replace('{end}', fmtLong(state.profile.endDate))}</p>
+            {tier ? <p className="rounded-2xl border-bold border-ink bg-blush/50 p-4 text-lg font-semibold">{req[tier].replace('{end}', fmtLong(state.profile.endDate))}</p>
               : <p className="text-muted">Choose a tier to see your requirement.</p>}
             {tier && a.fields.some((f) => f.tiers?.includes(tier)) && (
               <div className="mt-4 space-y-5 rounded-2xl bg-cream/60 p-4">
@@ -112,11 +114,12 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             {otherTiers && (
               <ul className="mt-3 space-y-2">
                 {([1, 2, 3] as TierId[]).filter((t) => t !== tier).map((t) => (
-                  <li key={t} className="rounded-xl bg-bg p-3 text-sm"><span className="font-bold">{TIERS[t].short}: {TIERS[t].name}.</span> {a.tierRequirements[t].replace('{end}', fmtLong(state.profile.endDate))}</li>
+                  <li key={t} className="rounded-xl bg-bg p-3 text-sm"><span className="font-bold">{TIERS[t].short}: {TIERS[t].name}.</span> {req[t].replace('{end}', fmtLong(state.profile.endDate))}</li>
                 ))}
               </ul>
             )}
           </Section>
+          ) })()}
 
           {/* 6. Workspace */}
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
@@ -127,6 +130,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             {a.calculator === 'measure' && <div className="mb-6"><MeasureWorkspace actionId={a.id} /></div>}
             {a.calculator === 'bottleneck' && <div className="mb-6"><BottleneckWorkspace actionId={a.id} /></div>}
             {a.calculator === 'doubledown' && <div className="mb-6"><DoubleDownWorkspace actionId={a.id} /></div>}
+            {a.calculator === 'review' && <div className="mb-6"><CeoReviewWorkspace actionId={a.id} /></div>}
             <div className="space-y-5">
               {a.fields.filter((f) => !f.tiers && (!f.onlyTiers || (tier && f.onlyTiers.includes(tier))) && (!f.showIf || f.showIf.equals.includes(String(p.fields[f.showIf.field] ?? '')))).map((f) => (
                 <div key={f.id}>

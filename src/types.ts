@@ -66,10 +66,11 @@ export interface ActionDef {
   tierIntro?: string
   help?: HelpDef
   /** Built-in interactive tool shown at the top of the workspace. */
-  calculator?: 'reverse-engineer' | 'pattern-quiz' | 'maybes' | 'recover' | 'measure' | 'bottleneck' | 'doubledown'
+  calculator?: 'reverse-engineer' | 'pattern-quiz' | 'maybes' | 'recover' | 'measure' | 'bottleneck' | 'doubledown' | 'review'
   dueDay: number // day of challenge (1–60)
   checklist: { id: string; label: string }[]
-  tierRequirements: Record<TierId, string>
+  /** Leave out for actions that are the same for every tier (e.g. Action 16). */
+  tierRequirements?: Record<TierId, string>
   fields: FieldDef[]
   proof: string[]
   resources: { label: string; url?: string }[]

@@ -45,7 +45,7 @@ const SEEDS: Seed[] = [
   [13, 'optimise', 'Measure', 'See what’s working, what’s not, and where sales are being lost.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Find the one step where buyers get stuck, and fix it.', 53],
   [15, 'optimise', 'Double Down', 'Find what worked best, and do more of it.', 57],
-  [16, 'optimise', 'Final Push and CEO Review', 'Finish strongly, record the result and choose the next milestone.', 60],
+  [16, 'optimise', 'Final Push and CEO Review', 'One last push, then look back at what you built and decide what’s next.', 60],
 ]
 
 const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
@@ -1084,6 +1084,27 @@ Then turn the best ideas into a simple 4-day plan. Keep everything tied to my of
   resources: [],
 }
 
+// Same for every tier, so there is no tier requirement and no help box (Part 4 covers what's next).
+const ACTION_16: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You’ve made your final push, and you know exactly what you built, what worked, and what your next 60 days look like.',
+  description: 'Make one final push towards your milestone, then review your 60 days like a CEO. Look at your results, what worked, what you’ll keep, and what comes next.',
+  why: `Most people finish a challenge and move straight on. They never stop to see what they built or what they learned, so they start the next 60 days from scratch.
+
+A CEO reviews. They look at the numbers, keep what worked, cut what didn't, and set the next goal from real evidence, not hope. Everything you've built in this challenge, from your buyer and offer to your sales path and your engine, keeps working after day 60 if you choose to keep it.`,
+  checklist: [
+    'Plan your final 3-day push',
+    'Do your final push',
+    'Answer your CEO Review questions',
+    'Set your next 60-day milestone',
+    'Save your review as a PDF',
+  ].map((label, i) => ({ id: `a16-c${i + 1}`, label })),
+  calculator: 'review',
+  fields: [],
+  proof: ['Post your 60-day results and your next milestone in the community.'],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -1105,10 +1126,15 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
   }
 }
 
+const CONTENT: Record<number, Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'>> = {
+  1: ACTION_01, 2: ACTION_02, 3: ACTION_03, 4: ACTION_04, 5: ACTION_05, 6: ACTION_06, 7: ACTION_07, 8: ACTION_08,
+  9: ACTION_09, 10: ACTION_10, 11: ACTION_11, 12: ACTION_12, 13: ACTION_13, 14: ACTION_14, 15: ACTION_15, 16: ACTION_16,
+}
+
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : number === 14 ? ACTION_14 : number === 15 ? ACTION_15 : placeholderFor(number)),
+  ...(CONTENT[number] ?? placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

@@ -72,6 +72,7 @@ body { font-size: 16px; -webkit-font-smoothing: antialiased; }
   .print-area { position: absolute !important; inset: 0 auto auto 0 !important; width: 100% !important; max-width: none !important; height: auto !important; overflow: visible !important; border: 0 !important; animation: none !important; }
   .print-area [inert] { opacity: 1 !important; filter: none !important; }
   .no-print { display: none !important; }
+  .print-area, .print-area * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 @media (prefers-reduced-motion: reduce) { .animate-pop, .animate-glow, .animate-slidein { animation: none; } }
