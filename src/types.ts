@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice' | 'time' | 'multi' | 'rhythm'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice' | 'time' | 'multi' | 'rhythm' | 'tracklist' | 'duration' | 'sprintsummary'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'
@@ -36,6 +36,10 @@ export interface FieldDef {
   pathMap?: { by: string; steps: Record<string, { label: string; field: string }[]> }
   /** 'notice': message shown only when every listed field is "Yes". */
   notice?: { when: string[]; text: string }
+  /** 'duration': the two date fields to count days between, plus optional warning above `max` days. */
+  range?: { start: string; end: string; max?: number; tooLong?: string }
+  /** Minimum list length to show a warning under, for these tiers, e.g. { 1: 15 }. */
+  minItems?: Partial<Record<TierId, { n: number; text: string }>>
   /** 'multi': number of short inputs (saved as a list). */
   count?: number
   /** Label that uses another answer, e.g. { field: 'theme1', template: 'Topics for “{v}”' }; falls back to `label`. */

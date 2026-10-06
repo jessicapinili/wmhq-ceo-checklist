@@ -626,6 +626,107 @@ Content brings people to you. Reaching out brings people to you faster. You need
   resources: [],
 }
 
+const ACTION_09: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You have a short, focused sales push with a start date, an end date, and a real reason for people to buy now.',
+  description: 'Give buyers a clear reason to make a decision now. Pick a short sprint window, tell people your offer is open, and message the people most likely to buy.',
+  why: `When an offer is always available, people put off deciding. A focused push gives them a reason to decide now, and gives you a set time to sell hard, then rest.
+
+A push is not a big launch. You don't need a webinar, ads or a team. It's a set number of days where your offer is the main thing you talk about, with a real reason to act before it closes.
+
+The reason must be true. Fake deadlines break trust. Real reasons work better anyway, such as limited spots, a bonus that ends, a price going up, or a season.`,
+  checklist: [
+    'Choose your sprint type',
+    'Set your sprint dates',
+    'Write your reason to buy now',
+    'Build your warm list',
+    'Plan what you will post and send each day',
+    'Complete your tier requirement',
+    'Open your sprint',
+    'Close your sprint on the end date',
+  ].map((label, i) => ({ id: `a09-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Keep it to 7 days. Your warm list needs at least 15 names: people who match your buyer, people who have engaged with your content, and people you already know. Message every single one during the push.',
+    2: 'Open the push to past buyers first, with 2 days of early access before anyone else. Every past buyer on your list gets a personal message, not a group post.',
+    3: 'Set a cash target for this push only, as a share of your $10K. Plan one moment in the push that drives the most sales, like a live session, a bonus deadline or doors closing. Track your cash daily during the push.',
+  },
+  help: {
+    inWmhq: { line: 'Open Launch Campaigns in your Personal Portal. It walks you through planning and running your push step by step.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `My offer is: [one-liner from Action 03]. My buyer is: [buyer sentence from Action 02]. My price is [price]. I want to run a short sales sprint.
+
+Interview me one question at a time to plan it. Push back if my answers are vague or if a deadline sounds made up.
+
+Help me decide:
+1. My sprint type: limited spots, bonus deadline, price going up, doors closing, founding offer, or seasonal. Pick the one that is true for me.
+2. My start and end dates (5 to 10 days)
+3. My reason to buy now, finishing: "Buy before [end date] because..."
+4. Who should be on my warm list. Give me 5 types of people I should message, based on my buyer.
+
+Then write my sprint plan:
+Before: 1 post and 1 message to tell people something is coming
+Open: 1 post and 1 message to announce the offer
+Middle: 1 post and 1 message that shares a result or answers a worry
+Close: 1 post and 1 message for the last day`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't1Seven', label: 'Is your sprint 7 days or less?', type: 'yesno', tiers: [1], ifNotYet: 'Shorten it to 7 days. A short sprint keeps you focused.' },
+    { id: 't2Early', label: 'When does early access for past buyers start?', type: 'date', tiers: [2], help: '2 days before your sprint opens to everyone else.' },
+    { id: 't2Personal', label: 'Will every past buyer get a personal message, not a group post?', type: 'yesno', tiers: [2], ifNotYet: 'Write each past buyer a short personal message. It makes them feel remembered.' },
+    { id: 't3Target', label: 'Cash target for this sprint', type: 'currency', tiers: [3], help: 'A share of your $10K, for this sprint only.' },
+    { id: 't3Moment', label: 'Your biggest sales moment', type: 'textarea', tiers: [3], help: 'Like a live session, a bonus deadline or doors closing.' },
+    { id: 't3Daily', label: 'Daily cash tracker', type: 'list', tiers: [3], placeholder: 'e.g. Day 1: $1,200' },
+    // Block 1
+    { id: 'type', label: 'Your sprint type', type: 'cards', help: 'Pick the one that is true for you. Never make up a deadline.',
+      group: { title: 'Block 1: Your sprint type' },
+      cards: [
+        { title: 'Limited spots', desc: 'Only a set number of people can buy.' },
+        { title: 'Bonus deadline', desc: 'Buy before the end date and get something extra.' },
+        { title: 'Price going up', desc: 'The price rises after the end date.' },
+        { title: 'Doors closing', desc: 'The offer closes after the end date.' },
+        { title: 'Founding offer', desc: 'The first buyers get a special price or extra.' },
+        { title: 'Seasonal', desc: 'Tied to a real time, like Christmas, summer or back to school.' },
+      ] },
+    // Block 2
+    { id: 'start', label: 'Start date', type: 'date', group: { title: 'Block 2: Your sprint window' } },
+    { id: 'end', label: 'End date', type: 'date' },
+    { id: 'window', label: 'Sprint length', type: 'duration', range: { start: 'start', end: 'end', max: 14, tooLong: 'Shorter is stronger. Try 5 to 10 days.' } },
+    // Block 3
+    { id: 'reason', label: 'Finish this sentence: “Buy before [end date] because…”', type: 'textarea', placeholder: 'Buy before 30 November because only 5 spots are open before Christmas.',
+      help: 'Example: “Buy before 30 November because only 5 spots are open before Christmas.”', group: { title: 'Block 3: Your reason to buy now' } },
+    // Block 4
+    { id: 'warmList', label: 'Your warm list', type: 'tracklist', placeholder: 'Add a name',
+      help: 'People who match your buyer, people who have engaged with your content, past buyers, and people you already know. Tick each one once you have messaged them.',
+      minItems: { 1: { n: 15, text: 'Tier 01 needs at least 15 names.' } },
+      group: { title: 'Block 4: Your warm list', intro: 'Messaging past buyers and warm contacts is part of the sprint, not a separate step.' } },
+    // Block 5
+    { id: 'beforePost', label: 'What I will post', type: 'textarea', group: { title: 'Block 5: Your sprint plan', intro: 'Before (1 to 2 days): tell people something is coming.' } },
+    { id: 'beforeSend', label: 'What I will send', type: 'textarea' },
+    { id: 'openPost', label: 'What I will post', type: 'textarea', group: { title: 'Open (day 1)', intro: 'Announce the offer and the reason to buy now.' } },
+    { id: 'openSend', label: 'What I will send', type: 'textarea' },
+    { id: 'middlePost', label: 'What I will post', type: 'textarea', group: { title: 'Middle', intro: 'Share a result, answer a worry, show what’s included.' } },
+    { id: 'middleSend', label: 'What I will send', type: 'textarea' },
+    { id: 'closePost', label: 'What I will post', type: 'textarea', group: { title: 'Close (last day)', intro: 'Last call, and say clearly when it ends.' } },
+    { id: 'closeSend', label: 'What I will send', type: 'textarea' },
+    // Block 6
+    { id: 'summary', label: 'Your sprint summary', type: 'sprintsummary', group: { title: 'Block 6: Your sprint summary' } },
+    { id: 'bridge', label: 'Next', type: 'notice', notice: { when: [], text: 'Your sprint is open. Watch what you avoid this week. You’ll use it in Action 10.' } },
+  ],
+  proof: [
+    'Post your sprint summary in the community before your sprint opens',
+    'Your open post or message',
+    'How many people on your warm list you messaged',
+    'Your tier requirement: your 7-day dates, your early access for past buyers, or your cash target and daily tracker',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -650,7 +751,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

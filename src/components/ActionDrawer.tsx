@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ACTIONS, PHASES, TIERS } from '../data/content'
 import { useStore } from '../store'
 import type { FieldDef, HelpDef, Profile, TierId } from '../types'
-import { checkedCount, dueDate, fmtLong, progressOf, todayISO } from '../utils'
+import { checkedCount, daysBetween, dueDate, fmtDate, fmtLong, fmtMoney, progressOf, todayISO } from '../utils'
 import { StatusSelect } from './Board'
 import NumberCalculator, { computeNumbers } from './NumberCalculator'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
@@ -204,6 +204,30 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
         </div>
       )
     }
+    if (f.type === 'duration') {
+      const s0 = String(p.fields[f.range!.start] ?? ''), e0 = String(p.fields[f.range!.end] ?? '')
+      if (!s0 || !e0) return null
+      const days = daysBetween(s0, e0) + 1
+      if (days < 1) return <p className="rounded-xl bg-highlight/70 p-3 text-sm font-medium">Your end date needs to be after your start date.</p>
+      return (
+        <div className="space-y-2">
+          <p className="rounded-xl bg-blush/50 p-3 font-semibold">Your sprint runs for {days} {days === 1 ? 'day' : 'days'}.</p>
+          {f.range!.max && days > f.range!.max && <p className="rounded-xl bg-highlight/70 p-3 text-sm font-medium">{f.range!.tooLong}</p>}
+        </div>
+      )
+    }
+    if (f.type === 'sprintsummary') {
+      const v = (k: string) => String(p.fields[k] ?? '').trim()
+      const list = Array.isArray(p.fields.warmList) ? (p.fields.warmList as string[]).filter((x) => x.replace(/^\[x\] /, '').trim()) : []
+      const days = v('start') && v('end') ? daysBetween(v('start'), v('end')) + 1 : null
+      const lines = [
+        [v('type') || 'Sprint type not chosen', v('start') && v('end') ? `${fmtDate(v('start'))} to ${fmtDate(v('end'))}` : 'Dates not set', days && days > 0 ? `${days} days` : ''].filter(Boolean).join(' · '),
+        `Buy now because: ${v('reason') || '…'}`,
+        `Warm list: ${list.length} ${list.length === 1 ? 'name' : 'names'}`,
+        ...(tier === 3 ? [`Cash target: ${p.fields.t3Target ? fmtMoney(Number(p.fields.t3Target)) : '…'}`] : []),
+      ]
+      return <SprintSummary title={f.label} lines={lines} />
+    }
     if (f.type === 'notice') {
       const on = f.notice!.when.every((k) => p.fields[k] === 'Yes')
       return on ? <p className="rounded-2xl bg-success-soft p-4 font-semibold text-success">{f.notice!.text}</p> : null
@@ -238,6 +262,33 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
       case 'textarea': input = <TextArea id={fid} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />; break
       case 'number': case 'currency':
         input = <NumberInput id={fid} currency={f.type === 'currency'} value={raw == null || raw === '' ? null : Number(raw)} onChange={(v) => f.bind ? write(v) : write(v == null ? '' : String(v))} />; break
+      case 'tracklist': {
+        // Each entry is saved as "[x] Name" once ticked, or "Name".
+        const vals = Array.isArray(raw) ? raw : []
+        const done = vals.filter((x) => x.startsWith('[x] ')).length
+        const rows = vals.map((x) => ({ on: x.startsWith('[x] '), name: x.replace(/^\[x\] /, '') }))
+        const save = (r: { on: boolean; name: string }[]) => write(r.map((x) => (x.on ? `[x] ${x.name}` : x.name)))
+        const min = tier ? f.minItems?.[tier] : undefined
+        input = (
+          <div className="space-y-2">
+            {rows.length > 0 && <p className="text-sm font-semibold">{rows.length} {rows.length === 1 ? 'name' : 'names'} · {done} messaged</p>}
+            <ul className="space-y-1.5">
+              {rows.map((r, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <input type="checkbox" aria-label={`Messaged ${r.name || 'this person'}`} checked={r.on} className="h-5 w-5 shrink-0 accent-[var(--c-ink)]"
+                    onChange={(e) => save(rows.map((x, j) => (j === i ? { ...x, on: e.target.checked } : x)))} />
+                  <input aria-label={`Name ${i + 1}`} className={`field !py-2 ${r.on ? 'text-muted line-through' : ''}`} value={r.name}
+                    onChange={(e) => save(rows.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+                  <button type="button" className="rounded-full p-2 text-muted hover:bg-bg hover:text-danger" aria-label={`Remove ${r.name || 'name'}`}
+                    onClick={() => save(rows.filter((_, j) => j !== i))}><X size={16} /></button>
+                </li>
+              ))}
+            </ul>
+            <ListInput id={fid} value={[]} placeholder={f.placeholder} onChange={(added) => save([...rows, ...added.map((n) => ({ on: false, name: n }))])} />
+            {min && rows.length < min.n && <p className="rounded-xl bg-highlight/70 p-3 text-sm font-medium">{min.text} ({rows.length} so far)</p>}
+          </div>
+        ); break
+      }
       case 'multi': {
         const vals = Array.isArray(raw) ? raw : []
         input = (
@@ -361,5 +412,18 @@ function HelpBox({ help, values }: { help: HelpDef; values: Record<string, strin
         </p>
       )}
     </Section>
+  )
+}
+
+function SprintSummary({ title, lines }: { title: string; lines: string[] }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <section className="rounded-card border-bold border-ink bg-ink p-6 text-surface shadow-card">
+      <p className="pixel text-xl text-blush">{title.toUpperCase()}</p>
+      <div className="mt-2 space-y-1.5 text-lg">{lines.map((l, i) => <p key={i} className={i === 0 ? 'font-bold' : ''}>{l}</p>)}</div>
+      <button type="button" className="btn mt-4 bg-surface !px-4 !py-2 text-ink" onClick={async () => {
+        try { await navigator.clipboard.writeText(lines.join('\n')); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* blocked */ }
+      }}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy summary</>}</button>
+    </section>
   )
 }
