@@ -12,7 +12,7 @@ type BuyMode = 'page' | 'conversation'
 
 /** The Action 04 numbers, also used by Action 08's rhythm check. */
 export function computeNumbers(state: AppState, actionId = 'a04') {
-  const { tier, offerPrice: price } = state.profile
+  const { tier, offerPrice: price, baseline } = state.profile
   const f = progressOf(state, actionId).fields
   const num = (k: string) => { const v = Number(f[k]); return f[k] === '' || f[k] == null || Number.isNaN(v) ? null : v }
   const repeatSales = num('calcRepeatSales')
@@ -21,7 +21,8 @@ export function computeNumbers(state: AppState, actionId = 'a04') {
   let salesNeeded: number | null = null
   if (tier === 1) salesNeeded = 1
   if (tier === 2) salesNeeded = repeatSales && repeatSales > 0 ? Math.ceil(repeatSales) : null
-  if (tier === 3) salesNeeded = price && price > 0 ? Math.ceil(10_000 / price) : null
+  // Tier 03 = collect her last 60 days' cash PLUS $10,000, so sales cover the full total.
+  if (tier === 3) salesNeeded = price && price > 0 ? Math.ceil(((baseline ?? 0) + 10_000) / price) : null
   const ready = salesNeeded != null && rateN != null && rateN >= 1
   const peopleNeeded = ready ? Math.ceil(salesNeeded! * rateN!) : null
   const perWeekNeeded = peopleNeeded != null ? Math.ceil(peopleNeeded / WEEKS) : null
@@ -80,7 +81,7 @@ export default function NumberCalculator({ actionId }: { actionId: string }) {
           <p className="mt-3 rounded-2xl bg-blush/50 p-4 text-lg font-semibold">
             {tier === 1 && <>You need 1 sale{price ? <> at {fmtMoney(price)}</> : null}.</>}
             {tier === 2 && (salesNeeded ? <>{salesNeeded} sales{price ? <> at {fmtMoney(price)} = {fmtMoney(salesNeeded * price)}</> : null}.</> : 'Enter how many repeat sales you want.')}
-            {tier === 3 && (salesNeeded ? <>You need $10,000 more than last time{baseline != null ? <> ({fmtMoney(baseline + 10_000)} in total)</> : null}. At {fmtMoney(price)}, that is {salesNeeded} sales.</> : 'Enter your price to see how many sales you need.')}
+            {tier === 3 && (salesNeeded ? <>You need to collect {fmtMoney((baseline ?? 0) + 10_000)}: your last 60 days{baseline ? ` (${fmtMoney(baseline)})` : ''} plus $10,000. At {fmtMoney(price)}, that is {salesNeeded} sales.</> : 'Enter your price to see how many sales you need.')}
           </p>
         )}
       </Step>
