@@ -13,7 +13,7 @@ export const TIERS: Record<TierId, { name: string; short: string; description: s
 export const PHASES: { id: PhaseId; number: string; name: string; days: [number, number]; intro: string }[] = [
   { id: 'plan', number: '01', name: 'Plan', days: [1, 14], intro: 'Choose your milestone, your buyer and your offer, then turn the number into weekly activity.' },
   { id: 'execute', number: '02', name: 'Execute', days: [15, 30], intro: 'Set up the minimum, create one way in and build a clear path to yes.' },
-  { id: 'sell', number: '03', name: 'Sell', days: [31, 45], intro: 'Start conversations, run a focused push and follow up properly.' },
+  { id: 'sell', number: '03', name: 'Sell', days: [31, 45], intro: 'Make the offer, see what stops you, have the conversations, and close the loop.' },
   { id: 'optimise', number: '04', name: 'Optimise', days: [46, 60], intro: 'Measure, fix the bottleneck, double down and finish strongly.' },
 ]
 
@@ -27,9 +27,9 @@ const SEEDS: Seed[] = [
   [6, 'execute', 'Create One Way In', 'Give the right buyer one reason to raise her hand.', 22],
   [7, 'execute', 'Build the Sales Path', 'Give an interested buyer a clear way to say yes.', 26],
   [8, 'execute', 'Turn On Your Sales Engine', 'Create a repeatable rhythm that brings people towards the offer.', 30],
-  [9, 'sell', 'Start Warm Conversations', 'Speak directly to the people most likely to need the offer.', 34],
-  [10, 'sell', 'Run a Focused Sales Push', 'Give buyers a clear reason to make a decision now.', 38],
-  [11, 'sell', 'Run the Sales Conversations', 'Move each interested buyer towards a clear decision.', 42],
+  [9, 'sell', 'Run a Focused Sales Push', 'Pick a window, give people a reason to decide now, and tell people the offer is open.', 34],
+  [10, 'sell', 'Catch the Sabotage', 'Spot the fear and patterns that stopped the sale, using what actually happened.', 38],
+  [11, 'sell', 'Run the Sales Conversations', 'Move each buyer to a clear decision, without discounting, over-explaining or letting them go quiet.', 42],
   [12, 'sell', 'Follow Up and Expand', 'Recover undecided sales and create the next opportunity.', 45],
   [13, 'optimise', 'Measure', 'Find where the sales path is working and where it is leaking.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Improve the weakest point using one controlled change.', 53],
