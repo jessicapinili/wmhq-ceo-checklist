@@ -1,6 +1,7 @@
 import { BarChart3, BookOpen, ChartPie, Download, LogOut, ShieldCheck, Info as InfoIcon, LayoutDashboard, ListChecks, Menu, NotebookPen, Settings as SettingsIcon, Upload, X } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import ActionDrawer from './components/ActionDrawer'
+import { BONUS_ID, BonusDrawer } from './components/BonusAds'
 import Board from './components/Board'
 import { Modal, PageTitle, ProgressBar, SaveIndicator, useConfirm } from './components/ui'
 import { ACTIONS, PHASES, TIERS } from './data/content'
@@ -175,7 +176,8 @@ export default function App() {
       </button>
       <Modal open={sheet} onClose={() => setSheet(false)} title="My progress"><ProgressPanel onOpen={(id) => { setSheet(false); setOpenId(id) }} /></Modal>
 
-      {openId && <ActionDrawer id={openId} onClose={() => setOpenId(null)} onNavigate={setOpenId} onRequestComplete={requestComplete} onRequestTier={requestTier} />}
+      {openId === BONUS_ID && <BonusDrawer onClose={() => setOpenId(null)} />}
+      {openId && openId !== BONUS_ID && <ActionDrawer id={openId} onClose={() => setOpenId(null)} onNavigate={setOpenId} onRequestComplete={requestComplete} onRequestTier={requestTier} />}
       {shared}
     </div>
   )

@@ -5,6 +5,7 @@ import { useStore } from '../store'
 import type { ActionDef, ActionStatus, PhaseId } from '../types'
 import { challengeDay, checkedCount, dueDate, fmtDate, phaseForDay, progressOf, todayISO } from '../utils'
 import { ProgressBar } from './ui'
+import { BONUS_ID, BonusCard } from './BonusAds'
 
 export const STATUS: Record<ActionStatus, { label: string; cls: string }> = {
   not_started: { label: 'Not started', cls: 'bg-bg text-muted' },
@@ -82,6 +83,7 @@ export default function Board({ onOpen, onRequestComplete, compact }: { onOpen: 
                 {done.length > 0 && <p className="label-caps px-1 pt-2">Completed</p>}
                 {done.map((a) => <Card key={a.id} a={a} onOpen={onOpen} setStatus={setStatus} compact={compact} />)}
                 {list.length === 0 && <p className="rounded-xl border-2 border-dashed border-ink/15 p-4 text-center text-sm text-muted">No actions match this view.</p>}
+                {ph.id === 'optimise' && <div className="pt-2"><BonusCard onOpen={() => onOpen(BONUS_ID)} /></div>}
               </div>
             </div>
           )
