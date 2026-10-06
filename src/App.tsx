@@ -4,7 +4,7 @@ import ActionDrawer from './components/ActionDrawer'
 import { BONUS_ID, BonusDrawer } from './components/BonusAds'
 import Board from './components/Board'
 import { Modal, PageTitle, ProgressBar, SaveIndicator, useConfirm } from './components/ui'
-import { ACTIONS, PHASES, TIERS } from './data/content'
+import { ACTIONS, JOIN_WMHQ_URL, PHASES, TIERS } from './data/content'
 import { useStore } from './store'
 import { useMember } from './session'
 import type { TierId, View } from './types'
@@ -138,6 +138,13 @@ export default function App() {
               ))}
             </ul>
           </nav>
+          <a href={JOIN_WMHQ_URL} target="_blank" rel="noopener noreferrer"
+            className="mt-4 block rounded-2xl border-bold border-ink bg-blush p-4 transition-transform hover:-translate-y-0.5">
+            <span className="pixel block text-lg leading-none text-accent">UPGRADE</span>
+            <span className="mt-1 block font-bold">Upgrade to WMHQ</span>
+            <span className="mt-1 block text-sm text-ink/80">Keep going after the challenge with the full strategy, tools and support.</span>
+            <span className="mt-2 inline-flex items-center gap-1 text-sm font-bold underline underline-offset-4">Join WMHQ →</span>
+          </a>
           <div className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
             <button className="flex items-center gap-2 font-semibold hover:underline" onClick={exportJSON}><Download size={16} /> Export progress</button>
             <button className="flex items-center gap-2 font-semibold hover:underline" onClick={startImport}><Upload size={16} /> Import progress</button>

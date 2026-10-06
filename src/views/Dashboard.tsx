@@ -90,7 +90,7 @@ function ReadFirst() {
   const [open, setOpen] = useState(() => { try { return localStorage.getItem(KEY) !== '1' } catch { return true } })
   const toggle = () => setOpen((o) => { try { localStorage.setItem(KEY, o ? '1' : '0') } catch { /* ignore */ } return !o })
   return (
-    <section className="rounded-card border-bold border-ink bg-surface">
+    <section className="rounded-card border-bold border-ink bg-highlight/60">
       <h2>
         <button type="button" onClick={toggle} aria-expanded={open} aria-controls="read-first"
           className="flex w-full items-center justify-between gap-3 px-6 py-4 text-left text-lg font-bold sm:px-8">
@@ -99,7 +99,7 @@ function ReadFirst() {
         </button>
       </h2>
       {open && (
-        <div id="read-first" className="max-w-3xl space-y-3 px-6 pb-6 text-muted sm:px-8">
+        <div id="read-first" className="max-w-3xl space-y-3 px-6 pb-6 text-ink/80 sm:px-8">
           <p>If you follow this challenge, you will build a real process to hit your next revenue milestone. Every action here is a proven practice. Nothing is filler.</p>
           <p className="font-semibold text-ink">But it only works if you do the work.</p>
           <p>Opening the checklist every few days and hoping for the best won’t get you there. Neither will rushing through an action just to tick it off, or skipping the parts that feel uncomfortable. The uncomfortable parts are usually the ones that make the sale.</p>
