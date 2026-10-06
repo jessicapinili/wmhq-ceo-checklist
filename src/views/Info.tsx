@@ -4,12 +4,15 @@ import { PageTitle } from '../components/ui'
 import { useStore } from '../store'
 import { fmtDate } from '../utils'
 
+// How milestone proof is sent, shown under every tier.
+const SUBMIT = 'Submit your proof through the form posted in the community, within 7 days of your end date. We’ll share the form closer to the time.'
+
 // What counts as proof of each milestone. Payments must land between the member's start and end dates.
 const PROOF: Record<TierId, string[]> = {
   1: [
     'A screenshot of one new payment from Stripe, PayPal, Square, Shopify, your bank or your booking system.',
     'It must show the amount and the date, and the date must fall inside your challenge dates.',
-    'It must be a paid sale from a new buyer, not a refund, a free spot or a pending invoice.',
+    'It must be a paid sale from a brand-new buyer: someone who has never bought from you before. Refunds, free spots and pending invoices don’t count.',
     'Cover the buyer’s name and details. We only need the amount and date.',
   ],
   2: [
@@ -44,7 +47,7 @@ export default function Info() {
                   <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-semibold [&::-webkit-details-marker]:hidden">
                     How will I prove this?<span aria-hidden className="transition-transform group-open:rotate-180">⌄</span>
                   </summary>
-                  <ul className="list-disc space-y-1 px-3 pb-3 pl-7 text-sm text-muted">{PROOF[t].map((x) => <li key={x}>{x}</li>)}</ul>
+                  <ul className="list-disc space-y-1 px-3 pb-3 pl-7 text-sm text-muted">{[...PROOF[t], SUBMIT].map((x) => <li key={x}>{x}</li>)}</ul>
                 </details>
               </li>
             ))}
@@ -60,6 +63,7 @@ export default function Info() {
           </ol>
         </Block>
         <Block title="How proof works">
+          <p className="mb-3 rounded-2xl bg-highlight/60 p-4"><span className="font-semibold text-ink">A note on honesty.</span> We trust you. You could edit a screenshot or bend the numbers, and we might never know. But you would. This challenge is for you and your business. Faking a result doesn’t build a business that can do it again. That one’s on you.</p>
           <p>Each action lists the proof to post in the community. Post it, then paste the link, add a short written note, tick “Proof posted” and record the date. Proof keeps you accountable and lets us celebrate real progress.</p>
         </Block>
         <Block title="How browser saving works">
