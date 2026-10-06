@@ -3,7 +3,7 @@ import { CHALLENGE_DAYS, TIERS } from '../data/content'
 import { useStore } from '../store'
 import type { TierId } from '../types'
 import { Field, NumberInput, PageTitle, SaveIndicator, TextArea, TextInput, TierPicker, useConfirm } from '../components/ui'
-import { addDays, fmtLong } from '../utils'
+import { addDays, daysBetween, fmtLong } from '../utils'
 
 export default function Settings({ onRequestTier, onImport }: { onRequestTier: (t: TierId) => void; onImport: () => void }) {
   const { state, setProfile, exportJSON, reset } = useStore()
@@ -31,7 +31,7 @@ export default function Settings({ onRequestTier, onImport }: { onRequestTier: (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Primary offer" htmlFor="st-offer"><TextInput id="st-offer" value={p.offer} onChange={(v) => setProfile({ offer: v })} /></Field>
             <Field label="Offer price" htmlFor="st-price"><NumberInput id="st-price" currency value={p.offerPrice} onChange={(v) => setProfile({ offerPrice: v })} /></Field>
-            <Field label="Challenge start date" htmlFor="st-start"><TextInput id="st-start" type="date" value={p.startDate} onChange={(v) => v && setProfile({ startDate: v })} /></Field>
+            <Field label="Challenge start date" htmlFor="st-start"><TextInput id="st-start" type="date" value={p.startDate} onChange={(v) => v && setProfile({ startDate: v, endDate: addDays(v, Math.max(0, daysBetween(p.startDate, p.endDate))) })} /></Field>
             <Field label="Challenge end date" htmlFor="st-end" error={p.endDate <= p.startDate ? 'The end date needs to be after the start date.' : undefined}><TextInput id="st-end" type="date" value={p.endDate} onChange={(v) => v && setProfile({ endDate: v })} /></Field>
           </div>
           {p.endDate !== addDays(p.startDate, CHALLENGE_DAYS - 1) && (

@@ -28,6 +28,7 @@ export default function Dashboard({ onOpen, onRequestComplete }: { onOpen: (id: 
   const next = useNextAction()
   const days = daysLabel(profile.startDate, profile.endDate)
   const day = challengeDay(state)
+  const length = daysBetween(profile.startDate, profile.endDate) + 1
 
   return (
     <div className="space-y-8">
@@ -37,7 +38,7 @@ export default function Dashboard({ onOpen, onRequestComplete }: { onOpen: (id: 
             <span className="label-caps inline-block rounded-md bg-blush px-2.5 py-1 !text-ink">{tierLabel(profile.tier)}</span>
             <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Welcome back, {profile.firstName || 'CEO'}.</h1>
             <p className="mt-2 text-lg">Your milestone: <span className="marker font-semibold">{profile.milestone || 'Not set yet'}</span></p>
-            <p className="mt-1 text-muted">{fmtDate(profile.startDate, { day: 'numeric', month: 'long' })} to {fmtDate(profile.endDate, { day: 'numeric', month: 'long', year: 'numeric' })}{day >= 1 && day <= 60 ? ` · Day ${day} of 60` : ''}</p>
+            <p className="mt-1 text-muted">{fmtDate(profile.startDate, { day: 'numeric', month: 'long' })} to {fmtDate(profile.endDate, { day: 'numeric', month: 'long', year: 'numeric' })}{day >= 1 && day <= length ? ` · Day ${day} of ${length}` : ''}</p>
             <div className="mt-6">
               <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-semibold">You’re {stats.pct}% through the checklist.</p>

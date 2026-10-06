@@ -46,6 +46,10 @@ async function sendLoginEmail(to: string, link: string, firstName: string): Prom
 }
 
 export default async (req: Request) => {
+  // Requiring JSON stops other websites auto-posting forms here to spam members' inboxes.
+  if (!req.headers.get("content-type")?.includes("application/json")) {
+    return Response.json({ ok: false, error: "Expected JSON." }, { status: 415 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await req.json();

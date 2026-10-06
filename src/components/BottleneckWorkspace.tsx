@@ -56,12 +56,13 @@ export default function BottleneckWorkspace({ actionId }: { actionId: string }) 
 
   // Step 1: traffic
   const needed = computeNumbers(state).perWeekNeeded
-  const actual = str('traffic') !== '' ? Number(str('traffic')) : n13('actualWeekly')
+  // Once she has touched the box, her value wins (even blank); otherwise use Action 13's.
+  const actual = 'traffic' in f ? (str('traffic') !== '' ? Number(str('traffic')) : null) : n13('actualWeekly')
   const trafficKnown = needed != null && actual != null
   const trafficLow = trafficKnown && actual! < needed! * 0.7
 
   // Step 2: drop-off from Action 13
-  const drops = DROP_TO.map((d) => { const a = n13(d.from), b = n13(d.to); return a && b != null ? { ...d, r: Math.round((b / a) * 100) } : null }).filter(Boolean) as (typeof DROP_TO[number] & { r: number })[]
+  const drops = DROP_TO.map((d) => { const a = n13(d.from), b = n13(d.to); return a && b != null ? { ...d, r: Math.min(100, Math.round((b / a) * 100)) } : null }).filter(Boolean) as (typeof DROP_TO[number] & { r: number })[]
   const lowest = drops.length ? drops.reduce((x, y) => (y.r < x.r ? y : x)) : null
   const matches = str('matches') // 'Yes' | 'No'
 
@@ -259,7 +260,7 @@ export function bottleneckLabel(state: import('../types').AppState): string {
   const str = (k: string) => (typeof f[k] === 'string' ? (f[k] as string) : '')
   const n13 = (k: string) => (typeof a13[k] === 'string' && a13[k] !== '' ? Number(a13[k]) : null)
   const needed = computeNumbers(state).perWeekNeeded
-  const actual = str('traffic') !== '' ? Number(str('traffic')) : n13('actualWeekly')
+  const actual = 'traffic' in f ? (str('traffic') !== '' ? Number(str('traffic')) : null) : n13('actualWeekly')
   if (needed != null && actual != null && actual < needed * 0.7) return `${CARDS.traffic.tag}: ${CARDS.traffic.title}`
   const manual = str('manual') as B
   const drops = DROP_TO.map((d) => { const a = n13(d.from), b = n13(d.to); return a && b != null ? { ...d, r: b / a } : null }).filter(Boolean) as (typeof DROP_TO[number] & { r: number })[]

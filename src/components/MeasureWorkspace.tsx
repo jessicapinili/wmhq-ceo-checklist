@@ -1,7 +1,7 @@
 import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { useStore } from '../store'
-import { challengeDay, fmtMoney, progressOf, scoreTotals } from '../utils'
+import { challengeDay, daysBetween, fmtMoney, progressOf, scoreTotals } from '../utils'
 import { computeNumbers } from './NumberCalculator'
 import { Field, NumberInput, TextArea } from './ui'
 
@@ -26,15 +26,20 @@ export default function MeasureWorkspace({ actionId }: { actionId: string }) {
   const score = scoreTotals(state)
 
   // Part 1: plan vs actual (actual sales/cash default to the CEO Scorecard)
-  const actualSales = num('actualSales') ?? score.sales
-  const actualCash = num('actualCash') ?? score.cash
+  // What the boxes show (blank stays blank once she clears it) vs the numbers used for maths.
+  const salesBox = 'actualSales' in f ? num('actualSales') : score.sales
+  const cashBox = 'actualCash' in f ? num('actualCash') : score.cash
+  const actualSales = salesBox ?? 0
+  const actualCash = cashBox ?? 0
   const plannedSales = plan.salesNeeded
   const plannedCash = tier === 3 ? (baseline ?? 0) + 10_000 : plannedSales && price ? plannedSales * price : null
   const realRateN = num('bought') && num('saw') ? Math.round(num('saw')! / num('bought')!) : null
-  // On track = at least the share of the target that matches how far through the 60 days she is.
-  const day = Math.min(60, Math.max(1, challengeDay(state)))
-  const onTrack = tier === 3 ? actualCash >= ((baseline ?? 0) + 10_000) * (day / 60)
-    : plannedSales ? actualSales >= Math.ceil(plannedSales * (day / 60)) : null
+  // On track = at least the share of the target that matches how far through her challenge she is.
+  // Before day 1 there is nothing to judge yet.
+  const length = Math.max(1, daysBetween(state.profile.startDate, state.profile.endDate) + 1)
+  const day = Math.min(length, challengeDay(state))
+  const onTrack = day < 1 ? null : tier === 3 ? actualCash >= ((baseline ?? 0) + 10_000) * (day / length)
+    : plannedSales ? actualSales >= Math.ceil(plannedSales * (day / length)) : null
 
   // Part 2: funnel
   const vals = STEPS.map((s) => num(s.key))
@@ -59,12 +64,12 @@ export default function MeasureWorkspace({ actionId }: { actionId: string }) {
               <tr className="border-t border-line">
                 <th className="px-3 py-2 font-semibold">Sales</th>
                 <td className="px-3 py-2">{plannedSales ?? <span className="text-muted">Set in Action 04</span>}</td>
-                <td className="px-3 py-2"><div className="w-28"><NumberInput id="ms-sales" value={actualSales} onChange={(v) => set('actualSales', v == null ? '' : String(v))} /></div></td>
+                <td className="px-3 py-2"><div className="w-28"><NumberInput id="ms-sales" value={salesBox} onChange={(v) => set('actualSales', v == null ? '' : String(v))} /></div></td>
               </tr>
               <tr className="border-t border-line">
                 <th className="px-3 py-2 font-semibold">{tier === 3 ? 'Cash collected' : 'Cash'}</th>
                 <td className="px-3 py-2">{plannedCash != null ? fmtMoney(plannedCash) : <span className="text-muted">Needs your price and target</span>}{tier === 3 && <span className="block text-xs text-muted">Baseline + $10K</span>}</td>
-                <td className="px-3 py-2"><div className="w-32"><NumberInput id="ms-cash" currency value={actualCash} onChange={(v) => set('actualCash', v == null ? '' : String(v))} /></div></td>
+                <td className="px-3 py-2"><div className="w-32"><NumberInput id="ms-cash" currency value={cashBox} onChange={(v) => set('actualCash', v == null ? '' : String(v))} /></div></td>
               </tr>
               <tr className="border-t border-line">
                 <th className="px-3 py-2 font-semibold">People seeing your offer each week</th>
