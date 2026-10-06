@@ -75,7 +75,7 @@ button:disabled { opacity: 0.6; cursor: default; }
       <div class="wordmark">THE WMHQ CEO CHECKLIST CHALLENGE</div>
       <div class="eyebrow">Admin · Member access</div>
     </div>
-    <a href="/">Open checklist &rarr;</a>
+    <span><a href="/">Open checklist &rarr;</a> &nbsp;·&nbsp; <a href="/api/logout">Log out</a></span>
   </div>
 </header>
 
@@ -173,7 +173,7 @@ button:disabled { opacity: 0.6; cursor: default; }
 
   function request(options) {
     return fetch('/api/admin/members', options).then(function (res) {
-      if (res.status === 401) { location.href = '/login/'; throw new Error('Signed out'); }
+      if (res.status === 401) { location.href = '/admin/login/'; throw new Error('Signed out'); }
       return res.json().then(function (body) {
         if (!res.ok || !body.ok) throw new Error(body.error || 'Something went wrong.');
         return body;

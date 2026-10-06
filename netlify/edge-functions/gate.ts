@@ -3,7 +3,9 @@ import { clearedSessionCookie, getSession, RECHECK_MS, SESSION_TTL_MS, sessionCo
 import { hasAccess, isAdmin } from "../lib/members.ts";
 
 function toLogin(req: Request, clearCookie = false): Response {
-  const headers = new Headers({ Location: new URL("/login/", req.url).toString(), "Cache-Control": "no-store" });
+  // Admin pages use the email + password login; everything else uses the emailed link.
+  const page = new URL(req.url).pathname.startsWith("/admin") ? "/admin/login/" : "/login/";
+  const headers = new Headers({ Location: new URL(page, req.url).toString(), "Cache-Control": "no-store" });
   if (clearCookie) headers.append("Set-Cookie", clearedSessionCookie());
   return new Response(null, { status: 302, headers });
 }
@@ -12,9 +14,7 @@ export default async (req: Request, context: { next: () => Promise<Response> }) 
   const session = await getSession(req);
   if (!session) return toLogin(req, true);
 
-  if (new URL(req.url).pathname.startsWith("/admin") && !isAdmin(session.e)) {
-    return new Response(null, { status: 302, headers: { Location: new URL("/", req.url).toString() } });
-  }
+  if (new URL(req.url).pathname.startsWith("/admin") && !isAdmin(session.e)) return toLogin(req);
 
   const now = Date.now();
   let refreshedCookie: string | null = null;
@@ -38,5 +38,5 @@ export default async (req: Request, context: { next: () => Promise<Response> }) 
 
 export const config = {
   path: "/*",
-  excludedPath: ["/login", "/login/", "/login/*", "/api/*", "/favicon.png"],
+  excludedPath: ["/login", "/login/", "/login/*", "/admin/login", "/admin/login/", "/admin/login/*", "/api/*", "/favicon.png"],
 };
