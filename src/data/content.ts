@@ -42,7 +42,7 @@ const SEEDS: Seed[] = [
   [10, 'sell', 'Catch the Sabotage', 'Spot the fear and patterns that stopped the sale, using what actually happened.', 38],
   [11, 'sell', 'Turn Maybes Into Yes', 'Answer buyers’ worries and show them the cost of waiting, without letting your pattern take over.', 42],
   [12, 'sell', 'Recover & Repeat', 'Win back the “not yets” and turn buyers into your next sale.', 45],
-  [13, 'optimise', 'Measure', 'Find where the sales path is working and where it is leaking.', 49],
+  [13, 'optimise', 'Measure', 'See what’s working, what’s not, and where sales are being lost.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Improve the weakest point using one controlled change.', 53],
   [15, 'optimise', 'Double Down', 'Put more energy into the activities producing results.', 57],
   [16, 'optimise', 'Final Push and CEO Review', 'Finish strongly, record the result and choose the next milestone.', 60],
@@ -906,6 +906,67 @@ Rules: Make everything fit how a [product / service / info] business sells. Neve
   resources: [],
 }
 
+const ACTION_13: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know your real numbers, where buyers dropped off, and why people did or didn’t buy.',
+  description: 'Look at what actually happened, not what you think happened. Compare your plan to your real numbers, find where people dropped off, and ask buyers and non-buyers why.',
+  why: `Most people judge their business on feelings. "It's not working" or "nobody's buying." Feelings don't tell you what to fix. Numbers do.
+
+Every sale moves through the same steps: someone sees your offer, raises their hand, has a conversation or visits your page, and then buys. If sales are low, one of those steps is leaking. Your numbers show you which one.
+
+Numbers tell you where it broke. People tell you why. So you will also ask 3 buyers why they bought, and 3 people who didn't buy what stopped them. Those 6 answers are worth more than any guess.`,
+  checklist: [
+    'Check your milestone: planned vs actual',
+    'Fill in your sales steps numbers',
+    'Find your biggest drop-off',
+    'Write down what worked best',
+    'Ask 3 buyers why they bought',
+    'Ask 3 non-buyers what stopped them',
+    'Complete your tier requirement',
+  ].map((label, i) => ({ id: `a13-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'No sale yet? Measure your actions, not just your sales. How many people did you actually message, follow up with, and ask for the sale? Most first sales are missed because of low activity, not a bad offer. Made a sale? Ask that buyer exactly what made them say yes.',
+    2: 'Measure your repeat rate: how many past buyers you contacted, and how many bought again. Ask 2 repeat buyers what brought them back. That’s the reason you will use again in Action 15.',
+    3: 'Compare your cash collected to your baseline + $10K from Action 01. Then compare your real conversion rate to the rate you used in Action 04. If they’re far apart, that gap is your bottleneck.',
+  },
+  help: {
+    inWmhq: { line: 'Open the Money Dashboard in your Personal Portal. Put in your real numbers from this challenge to see where your money is coming from and what you need to close your gap.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your offer] at [price]. My 60-day goal was [milestone]. Here are my real numbers so far:
+People who saw my offer: [number]
+People who raised their hand: [number]
+Sales conversations or page visits: [number]
+Times I asked for the sale: [number]
+Sales: [number]
+Cash collected: $[amount]
+
+Buyers told me they bought because: [answers]. Non-buyers told me they didn't buy because: [answers].
+
+Tell me:
+1. The step where I lost the most people
+2. What my buyer and non-buyer answers say about why
+3. The one thing I should fix first in the next 4 days`,
+      bridge: 'AI can help you read your numbers. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'measure',
+  fields: [
+    { id: 't1Messaged', label: 'People you messaged', type: 'number', tiers: [1] },
+    { id: 't1Followed', label: 'People you followed up with', type: 'number', tiers: [1] },
+    { id: 't1Asked', label: 'Times you asked for the sale', type: 'number', tiers: [1] },
+    { id: 't1Yes', label: 'Made a sale? What made them say yes', type: 'textarea', tiers: [1] },
+    { id: 't2Contacted', label: 'Past buyers you contacted', type: 'number', tiers: [2] },
+    { id: 't2Again', label: 'Past buyers who bought again', type: 'number', tiers: [2] },
+    { id: 't2Why', label: 'What 2 repeat buyers said brought them back', type: 'textarea', tiers: [2], help: 'You will use this reason again in Action 15.' },
+    { id: 't3Gap', label: 'How far apart are your real and planned numbers, and what does that tell you?', type: 'textarea', tiers: [3], help: 'Compare cash to baseline + $10K, and your real conversion rate to the rate you used in Action 04. Both are side by side in your scorecard below.' },
+  ],
+  proof: ['Post your biggest drop-off and what worked best. Example: “Biggest drop-off: people raised their hand but I didn’t follow up. What worked best: messaging past clients directly.”'],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -930,7 +991,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
