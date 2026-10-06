@@ -730,6 +730,50 @@ Short, human, no hype, no fake urgency. Each ends with one clear next step.`,
   resources: [],
 }
 
+const ACTION_10: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know the exact pattern that is costing you sales, and you have taken one sales action to break it.',
+  description: 'Find the pattern that stops you from selling. Take the quick quiz, see what it is costing you in sales, and take the one action you have been avoiding.',
+  why: `Most people don't miss their sales goal because they don't know what to do. They miss it because they don't do the thing that makes the sale. They don't send the message, they drop the price, they say "no pressure" and let the buyer go, or they post about everything except the offer.
+
+This isn't laziness. It's a pattern your brain runs to keep you safe from being seen, judged or rejected. The pattern feels like a good reason in the moment: "I don't want to be pushy," "They're probably busy," "I'll wait until it's better."
+
+You can't fix a pattern you can't see. This quiz uses what you actually did in your sprint, so you can name your pattern, see what it costs, and break it with one action.`,
+  checklist: [
+    'Take the sales pattern quiz',
+    'Read your result',
+    'Work out what it cost you',
+    'Complete your tier requirement',
+    'Take your 24-hour action',
+    'Write what happened',
+  ].map((label, i) => ({ id: `a10-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Take your 24-hour action, then go back to your warm list from Action 09. Message the 3 people you have been avoiding the most. Your first sale is usually in the names you didn’t want to message.',
+    2: 'Take your 24-hour action with a past buyer. Message the 2 past buyers you have been putting off, and ask them directly if they want to buy again.',
+    3: 'Check your last 5 sales or quotes for your pattern. Did you discount, over-explain, or let anyone go quiet? Write how much it cost you in total, and fix it on your very next sale.',
+  },
+  help: {
+    inWmhq: { line: 'Open Subconscious Identity Mapping in your Personal Portal. It shows you the identity behind your pattern, so you can change it at the root, not just push through it.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
+    notInWmhq: {
+      line: 'The quiz shows you what is happening. It can’t change why it keeps happening. Inside WMHQ, you work on the identity behind the pattern, not just the behaviour.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'pattern-quiz',
+  fields: [
+    { id: 't1Avoided', label: 'The 3 people you have been avoiding the most', type: 'tracklist', tiers: [1], placeholder: 'First name from your warm list', help: 'Tick each one once you have messaged them.' },
+    { id: 't2Buyers', label: 'The 2 past buyers you have been putting off', type: 'tracklist', tiers: [2], placeholder: 'First name', help: 'Ask them directly if they want to buy again. Tick each one once you have.' },
+    { id: 't3Review', label: 'What you found in your last 5 sales or quotes', type: 'textarea', tiers: [3], help: 'Did you discount, over-explain, or let anyone go quiet?' },
+    { id: 't3Cost', label: 'What it cost you in total', type: 'currency', tiers: [3] },
+    { id: 't3Fix', label: 'How you will fix it on your very next sale', type: 'textarea', tiers: [3] },
+  ],
+  proof: [
+    'Post your pattern name, the action you took, and what happened. You don’t need to share your fears, only the pattern, the action and the result.',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -754,7 +798,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
