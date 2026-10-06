@@ -41,7 +41,7 @@ const SEEDS: Seed[] = [
   [9, 'sell', 'Run a Focused Sales Sprint', 'Pick a window, give people a reason to decide now, and tell people the offer is open.', 34],
   [10, 'sell', 'Catch the Sabotage', 'Spot the fear and patterns that stopped the sale, using what actually happened.', 38],
   [11, 'sell', 'Turn Maybes Into Yes', 'Answer buyers’ worries and show them the cost of waiting, without letting your pattern take over.', 42],
-  [12, 'sell', 'Follow Up and Expand', 'Recover undecided sales and create the next opportunity.', 45],
+  [12, 'sell', 'Recover & Repeat', 'Win back the “not yets” and turn buyers into your next sale.', 45],
   [13, 'optimise', 'Measure', 'Find where the sales path is working and where it is leaking.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Improve the weakest point using one controlled change.', 53],
   [15, 'optimise', 'Double Down', 'Put more energy into the activities producing results.', 57],
