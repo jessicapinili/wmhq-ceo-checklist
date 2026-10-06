@@ -43,7 +43,7 @@ const SEEDS: Seed[] = [
   [11, 'sell', 'Turn Maybes Into Yes', 'Answer buyers’ worries and show them the cost of waiting, without letting your pattern take over.', 42],
   [12, 'sell', 'Recover & Repeat', 'Win back the “not yets” and turn buyers into your next sale.', 45],
   [13, 'optimise', 'Measure', 'See what’s working, what’s not, and where sales are being lost.', 49],
-  [14, 'optimise', 'Fix the Bottleneck', 'Improve the weakest point using one controlled change.', 53],
+  [14, 'optimise', 'Fix the Bottleneck', 'Find the one step where buyers get stuck, and fix it.', 53],
   [15, 'optimise', 'Double Down', 'Put more energy into the activities producing results.', 57],
   [16, 'optimise', 'Final Push and CEO Review', 'Finish strongly, record the result and choose the next milestone.', 60],
 ]
@@ -967,6 +967,66 @@ Tell me:
   resources: [],
 }
 
+const ACTION_14: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know the one step in your sales path that is losing the most buyers, and you have fixed it.',
+  description: 'Find where your sales path is leaking and fix that one step. Use your numbers from Action 13 to spot the bottleneck, choose one fix, and test it in the next 4 days.',
+  why: `A bottleneck is the narrow part of a bottle. No matter how much you pour in, only a little comes out. Your sales path works the same way. If one step is blocked, everything after it slows down.
+
+Most people try to fix everything at once. They change their offer, their content, their price and their bio all in the same week. Then they can't tell what worked. Fix one step. Test it. Then move on.
+
+Always fix the earliest leak first. If people aren't seeing your offer, fixing your sales conversations won't help, because there's no one to talk to.`,
+  checklist: [
+    'Check your traffic and sales steps from Action 13',
+    'Find your bottleneck: Traffic, Interest, Path, Conversion or Follow-up',
+    'Read the signs and causes for your bottleneck',
+    'Choose one fix',
+    'Write your 4-day fix plan',
+    'Do your daily marketing every day of the fix',
+    'Complete your tier requirement',
+    'Check your number after 4 days',
+  ].map((label, i) => ({ id: `a14-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'If you haven’t asked for the sale at least 10 times, your bottleneck is activity, not your offer. Fix that first by sending 10 sales asks in the next 4 days.',
+    2: 'Check the path for past buyers on its own. Are they hearing about the offer? Are they being asked directly? Fix the step where past buyers drop off, even if new buyers are flowing fine.',
+    3: 'Work out what your bottleneck is costing you in cash. Use this: if this step improved by half, how many more sales, times your price? Fix the bottleneck with the biggest dollar cost first.',
+  },
+  help: {
+    inWmhq: { line: 'Use the Daily Marketing Checklist under Influence in your Personal Portal. Tick it off every day of your 4-day fix, so your traffic keeps flowing while you fix the leak.', linkLabel: 'Open your Personal Portal', url: WMHQ_PORTAL_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your offer] at [price] as a [product / service / info] business. Here are my sales steps from the last few weeks:
+Traffic (people who reached my offer): [number]
+Raised their hand: [number]
+Had a conversation or visited checkout: [number]
+I asked for the sale: [number]
+Bought: [number]
+Non-buyers told me: [answers from Action 13].
+
+Find my biggest bottleneck: Traffic, Interest, Path, Conversion or Follow-up. Always check Traffic first. If not enough people are reaching my offer, that's the bottleneck. Then give me 3 fixes for that step only, ranked by which will make the biggest difference in 4 days. For the best fix, write a simple 4-day plan.
+
+Use only my numbers. Don't suggest fixing other steps. Be direct. Simple words.`,
+      bridge: 'AI can help you spot the leak. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'bottleneck',
+  fields: [
+    { id: 't1Asks', label: 'How many times have you asked for the sale so far?', type: 'number', tiers: [1], help: 'Under 10? Your bottleneck is activity. Send 10 sales asks in the next 4 days.' },
+    { id: 't1Tracker', label: 'Your 10 sales asks', type: 'tracklist', tiers: [1], placeholder: 'First name', help: 'Tick each one once you have asked.' },
+    { id: 't2Step', label: 'Where do past buyers drop off?', type: 'select', tiers: [2], options: ['They are not hearing about the offer', 'They hear about it, but are not asked directly', 'They are asked, but do not buy', 'They say “not yet” and are not followed up'] },
+    { id: 't2Fix', label: 'Your fix for past buyers', type: 'textarea', tiers: [2] },
+    { id: 't3More', label: 'If this step improved by half, how many more sales would you make?', type: 'number', tiers: [3], help: 'Your cost is this number times your price. It shows in your summary below.' },
+  ],
+  proof: [
+    'Your bottleneck and the one fix you chose',
+    'Your number before and after the 4 days',
+    'How many days of daily marketing you kept up',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -991,7 +1051,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : number === 14 ? ACTION_14 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
