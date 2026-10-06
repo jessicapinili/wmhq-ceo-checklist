@@ -190,15 +190,24 @@ export default function BottleneckWorkspace({ actionId }: { actionId: string }) 
           <p className="pixel text-xl text-accent">STEP 5</p><h4 className="text-2xl font-bold">Your 4-day fix plan</h4>
           <p className="mt-1 text-sm text-muted">Keep your daily marketing going while you fix the leak. If you stop showing up, your traffic drops, and you won’t know if the fix worked.</p>
         </div>
-        {days.map((d) => (
-          <div key={d} className="grid items-center gap-2 rounded-2xl border-bold border-line p-3 sm:grid-cols-[4rem_1fr_auto]">
-            <span className="font-bold">Day {d}</span>
-            <TextInput id={`bn-day${d}`} value={str(`day${d}`)} placeholder="Your fix task for today" onChange={(v) => set(`day${d}`, v)} />
-            <label className="flex items-center gap-2 text-sm font-medium">
-              <input type="checkbox" className="h-5 w-5 accent-[var(--c-ink)]" checked={str(`mk${d}`) === 'yes'} onChange={(e) => set(`mk${d}`, e.target.checked ? 'yes' : '')} />Daily marketing done
-            </label>
-          </div>
-        ))}
+        <div className="overflow-hidden rounded-2xl border-bold border-line">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-bg">
+              <tr><th scope="col" className="w-16 px-3 py-2">Day</th><th scope="col" className="px-3 py-2">My fix task</th><th scope="col" className="w-28 px-3 py-2 text-center">Daily marketing done</th></tr>
+            </thead>
+            <tbody>
+              {days.map((d) => (
+                <tr key={d} className="border-t border-line">
+                  <th scope="row" className="px-3 py-2 font-semibold">Day {d}</th>
+                  <td className="px-3 py-2"><input id={`bn-day${d}`} aria-label={`Day ${d} fix task`} className="field !py-2" value={str(`day${d}`)} placeholder="Your fix task" onChange={(e) => set(`day${d}`, e.target.value)} /></td>
+                  <td className="px-3 py-2 text-center">
+                    <input type="checkbox" aria-label={`Day ${d} daily marketing done`} className="h-5 w-5 accent-[var(--c-ink)]" checked={str(`mk${d}`) === 'yes'} onChange={(e) => set(`mk${d}`, e.target.checked ? 'yes' : '')} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p className="text-sm font-semibold">Daily marketing: {mkDone} of 4 days done</p>
       </section>
 
