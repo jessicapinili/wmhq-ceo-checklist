@@ -4,6 +4,27 @@ import { PageTitle } from '../components/ui'
 import { useStore } from '../store'
 import { fmtDate } from '../utils'
 
+// What counts as proof of each milestone. Payments must land between the member's start and end dates.
+const PROOF: Record<TierId, string[]> = {
+  1: [
+    'A screenshot of one new payment from Stripe, PayPal, Square, Shopify, your bank or your booking system.',
+    'It must show the amount and the date, and the date must fall inside your challenge dates.',
+    'It must be a paid sale from a new buyer, not a refund, a free spot or a pending invoice.',
+    'Cover the buyer’s name and details. We only need the amount and date.',
+  ],
+  2: [
+    'Screenshots of 3 payments for the same offer, all with dates inside your challenge.',
+    'Each one must show the amount and the date. Cover the buyers’ names and details.',
+    'Paid sales only. Refunds, free spots and pending invoices don’t count.',
+  ],
+  3: [
+    'Two cash reports from the same place, like Stripe, PayPal, Shopify, Xero or your bank.',
+    'Report 1: the cash you collected in the 30 days before your start date.',
+    'Report 2: the cash you collected between your start and end dates.',
+    'Report 2 must be at least $10,000 more than Report 1. Cash only: take off any refunds, and don’t count unpaid invoices.',
+  ],
+}
+
 export default function Info() {
   const { profile } = useStore().state
   return (
@@ -17,7 +38,15 @@ export default function Info() {
         <Block title="The three tiers">
           <ul className="space-y-3">
             {([1, 2, 3] as TierId[]).map((t) => (
-              <li key={t} className="rounded-2xl bg-bg p-4"><p className="pixel text-lg text-accent">{TIERS[t].short.toUpperCase()}</p><p className="font-bold">{TIERS[t].name}</p><p className="text-muted">{TIERS[t].description}</p></li>
+              <li key={t} className="rounded-2xl bg-bg p-4">
+                <p className="pixel text-lg text-accent">{TIERS[t].short.toUpperCase()}</p><p className="font-bold">{TIERS[t].name}</p><p className="text-muted">{TIERS[t].description}</p>
+                <details className="group mt-3 rounded-xl border-bold border-line bg-surface">
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-semibold [&::-webkit-details-marker]:hidden">
+                    How will I prove this?<span aria-hidden className="transition-transform group-open:rotate-180">⌄</span>
+                  </summary>
+                  <ul className="list-disc space-y-1 px-3 pb-3 pl-7 text-sm text-muted">{PROOF[t].map((x) => <li key={x}>{x}</li>)}</ul>
+                </details>
+              </li>
             ))}
           </ul>
           <p className="mt-3 text-muted">Everyone follows the same 16 actions. Your tier changes what success means and the specific requirement inside each action. You can change tiers in Settings without losing checklist progress.</p>
