@@ -535,6 +535,97 @@ Write: the message they get with the free thing, a check-in message 2 days later
   resources: [],
 }
 
+const THEME_HINT = 'Look at your buyer from Action 02. What they want, what they struggle with, and what they worry about are your themes. Each theme should lead back to your offer.'
+const THEME_EXAMPLES = [
+  { label: 'A dog trainer', text: '“Anxious dogs”, “Training without force”, “Life with a rescue”' },
+  { label: 'A skincare brand', text: '“Sensitive skin”, “Simple routines”, “What’s really in your products”' },
+  { label: 'A bookkeeper', text: '“Tax time stress”, “Knowing your numbers”, “Paying yourself properly”' },
+]
+const TOPIC_HINT = 'Topics are subjects you can post about again and again. If you can only post about it once, it’s a post idea, not a topic.'
+
+const ACTION_08: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You have a content system and a weekly rhythm that sends people to your offer, built to hit your number.',
+  description: 'Create a repeatable rhythm that brings people towards the offer. Know what you talk about, how often you show up, and how many people you reach out to each week.',
+  why: `Posting random content when you feel like it does not make sales. A sales engine does. It is a simple weekly rhythm with three parts: show up with content, reach out to people directly, and follow up.
+
+Your content needs a system so you never run out of things to say, and so everything you post points back to your offer. That system has two layers:
+
+Themes are the bigger conversations and problems you want to be known for. You have 4. Three are about your business and what your buyer struggles with. The fourth is your story.
+
+Topics are the repeatable subjects that sit under each theme. You can post about them again and again in new ways.
+
+Content brings people to you. Reaching out brings people to you faster. You need both.`,
+  checklist: [
+    'Write your 3 business themes',
+    'Write your story theme',
+    'Write 3 topics under each theme',
+    'Pull in your weekly number from Action 04',
+    'Set how many times you will post each week',
+    'Set how many people you will reach out to each week',
+    'Complete your tier requirement',
+    'Block your engine time in your calendar',
+  ].map((label, i) => ({ id: `a08-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Outreach is required, not optional. Reach out to at least 5 people a week who match your buyer. Content supports this, but direct conversations will get your first sale faster.',
+    2: 'Outreach is required. Message at least 3 past buyers a week until you have contacted all of them. Make sure one of your business themes speaks to people who already know you.',
+    3: 'Match your rhythm to your gap from Action 04. If your gap is traffic, post and reach out more. If your gap is conversion, make one theme about the results and proof that make people buy. Write down which gap you are fixing.',
+  },
+  help: {
+    inWmhq: {
+      line: 'Watch the Creating Content Pillars lesson in the Vault, then build your themes and topics in the Visibility tool in your Personal Portal.',
+      linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL,
+      more: [{ label: 'Open your Personal Portal', url: WMHQ_PORTAL_URL }],
+    },
+    notInWmhq: {
+      line: 'Follow the steps below. Start with your buyer from Action 02. Their wants, struggles and worries are where your themes come from.',
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't2Theme', label: 'Which business theme speaks to people who already know you?', type: 'text', tiers: [2] },
+    { id: 't3Gap', label: 'Which gap are you fixing?', type: 'select', tiers: [3], options: ['Traffic: post and reach out more', 'Conversion: one theme about results and proof'] },
+    { id: 't3Notes', label: 'What you will change in your rhythm', type: 'textarea', tiers: [3] },
+    // Part 1: themes
+    { id: 'theme1', label: 'Business theme 1', type: 'text', help: THEME_HINT, examples: THEME_EXAMPLES,
+      group: { title: 'Part 1: Your themes', intro: 'Themes are the broader conversations and problems you want your brand to become known for. Topics are the repeatable subjects that sit underneath each theme.' } },
+    { id: 'theme2', label: 'Business theme 2', type: 'text', help: THEME_HINT },
+    { id: 'theme3', label: 'Business theme 3', type: 'text', help: THEME_HINT },
+    { id: 'theme4', label: 'Theme 4: Your story', type: 'text', placeholder: 'From burnt-out nurse to running my own clinic.',
+      help: 'Why you started, what you have been through, and what you believe. This is what makes people trust you and choose you over someone else. Example: “From burnt-out nurse to running my own clinic.”' },
+    // Part 2: topics
+    { id: 'topics1', label: 'Topics for business theme 1', type: 'multi', count: 3, help: TOPIC_HINT, labelFrom: { field: 'theme1', template: 'Topics for “{v}”' },
+      examples: [
+        { label: 'For the theme “Anxious dogs”', text: 'Signs your dog is anxious · Walks that go wrong · What helps and what makes it worse' },
+        { label: 'For the story theme', text: 'Why I started · Mistakes I made · What I believe about [your industry]' },
+      ],
+      group: { title: 'Part 2: Your topics', intro: 'Three topics under each of your 4 themes.' } },
+    { id: 'topics2', label: 'Topics for business theme 2', type: 'multi', count: 3, help: TOPIC_HINT, labelFrom: { field: 'theme2', template: 'Topics for “{v}”' } },
+    { id: 'topics3', label: 'Topics for business theme 3', type: 'multi', count: 3, help: TOPIC_HINT, labelFrom: { field: 'theme3', template: 'Topics for “{v}”' } },
+    { id: 'topics4', label: 'Topics for your story', type: 'multi', count: 3, help: TOPIC_HINT, labelFrom: { field: 'theme4', template: 'Topics for your story: “{v}”' } },
+    // Part 3: weekly rhythm
+    { id: 'weeklyNumber', label: 'Your weekly number', type: 'rhythm', count: 0,
+      group: { title: 'Part 3: Your weekly rhythm' } },
+    { id: 'posts', label: 'How many times will you post each week?', type: 'number', help: 'Pick a number you can keep for 60 days. 3 posts every week beats 7 posts for one week.' },
+    { id: 'outreach', label: 'How many people will you reach out to each week?', type: 'number', help: 'Tier 01, at least 5. Tier 02, at least 3 past buyers.' },
+    { id: 'followups', label: 'How many follow-ups will you send each week?', type: 'number', help: 'Use your follow-up messages from Action 07.' },
+    { id: 'rhythmCheck', label: 'Does your rhythm hit your number?', type: 'rhythm' },
+    { id: 'engineDay', label: 'Engine time: which day?', type: 'select', options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'More than one day'],
+      help: 'Block it in your calendar like a client appointment.' },
+    { id: 'engineTime', label: 'Engine time: what time?', type: 'time' },
+  ],
+  proof: [
+    'Your 4 themes',
+    'Your weekly rhythm: posts, outreach and follow-ups each week',
+    'A screenshot of your engine time blocked in your calendar',
+    'Your tier requirement: your outreach number, the theme for past buyers, or the gap you are fixing',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -559,7 +650,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

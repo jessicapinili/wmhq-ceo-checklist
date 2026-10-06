@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice' | 'time' | 'multi' | 'rhythm'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'
@@ -36,13 +36,17 @@ export interface FieldDef {
   pathMap?: { by: string; steps: Record<string, { label: string; field: string }[]> }
   /** 'notice': message shown only when every listed field is "Yes". */
   notice?: { when: string[]; text: string }
+  /** 'multi': number of short inputs (saved as a list). */
+  count?: number
+  /** Label that uses another answer, e.g. { field: 'theme1', template: 'Topics for “{v}”' }; falls back to `label`. */
+  labelFrom?: { action?: string; field: string; template: string }
   /** Small heading shown above this field to start a new group. */
   group?: { title: string; intro?: string }
 }
 
 /** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */
 export interface HelpDef {
-  inWmhq: { line: string; linkLabel: string; url: string }
+  inWmhq: { line: string; linkLabel: string; url: string; more?: { label: string; url: string }[] }
   notInWmhq: { line: string; prompt?: string; promptBy?: { field: string; prompts: Record<string, string>; chooseFirst: string }; bridge?: string; joinLabel?: string; joinUrl?: string }
 }
 

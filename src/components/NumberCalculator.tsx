@@ -1,4 +1,5 @@
 import { useStore } from '../store'
+import type { AppState } from '../types'
 import { TIERS } from '../data/content'
 import { fmtMoney, progressOf } from '../utils'
 import { Field, HelpTip, NumberInput } from './ui'
@@ -8,6 +9,25 @@ export const STARTING_GUESS = { page: 50, conversation: 10 } as const
 const WEEKS = 8.5 // 60 days is about 8.5 weeks
 
 type BuyMode = 'page' | 'conversation'
+
+/** The Action 04 numbers, also used by Action 08's rhythm check. */
+export function computeNumbers(state: AppState, actionId = 'a04') {
+  const { tier, offerPrice: price } = state.profile
+  const f = progressOf(state, actionId).fields
+  const num = (k: string) => { const v = Number(f[k]); return f[k] === '' || f[k] == null || Number.isNaN(v) ? null : v }
+  const repeatSales = num('calcRepeatSales')
+  const rateN = num('calcRateN') // "1 in N"
+  const perWeekNow = num('calcNow')
+  let salesNeeded: number | null = null
+  if (tier === 1) salesNeeded = 1
+  if (tier === 2) salesNeeded = repeatSales && repeatSales > 0 ? Math.ceil(repeatSales) : null
+  if (tier === 3) salesNeeded = price && price > 0 ? Math.ceil(10_000 / price) : null
+  const ready = salesNeeded != null && rateN != null && rateN >= 1
+  const peopleNeeded = ready ? Math.ceil(salesNeeded! * rateN!) : null
+  const perWeekNeeded = peopleNeeded != null ? Math.ceil(peopleNeeded / WEEKS) : null
+  const gap = perWeekNeeded != null && perWeekNow != null ? perWeekNeeded - perWeekNow : null
+  return { repeatSales, rateN, perWeekNow, salesNeeded, ready, peopleNeeded, perWeekNeeded, gap }
+}
 
 /**
  * Action 04 calculator. Values are saved in the action's fields like any other
@@ -21,21 +41,7 @@ export default function NumberCalculator({ actionId }: { actionId: string }) {
   const set = (k: string, v: number | string | null) => setAction(actionId, (x) => ({ ...x, fields: { ...x.fields, [k]: v == null ? '' : String(v) } }))
 
   const mode = (f.calcMode as BuyMode | undefined) || null
-  const repeatSales = num('calcRepeatSales')
-  const rateN = num('calcRateN') // "1 in N"
-  const perWeekNow = num('calcNow')
-
-  // Step 2: sales needed
-  let salesNeeded: number | null = null
-  if (tier === 1) salesNeeded = 1
-  if (tier === 2) salesNeeded = repeatSales && repeatSales > 0 ? Math.ceil(repeatSales) : null
-  if (tier === 3) salesNeeded = price && price > 0 ? Math.ceil(10_000 / price) : null
-
-  // Step 5 results
-  const ready = salesNeeded != null && rateN != null && rateN >= 1
-  const peopleNeeded = ready ? Math.ceil(salesNeeded! * rateN!) : null
-  const perWeekNeeded = peopleNeeded != null ? Math.ceil(peopleNeeded / WEEKS) : null
-  const gap = perWeekNeeded != null && perWeekNow != null ? perWeekNeeded - perWeekNow : null
+  const { repeatSales, rateN, perWeekNow, salesNeeded, ready, peopleNeeded, perWeekNeeded, gap } = computeNumbers(state, actionId)
 
   // Tier 03 helper: work out the real rate from the last 60 days
   const t3Sales = num('calcT3Sales'), t3Seen = num('calcT3Seen')

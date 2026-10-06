@@ -5,7 +5,7 @@ import { useStore } from '../store'
 import type { FieldDef, HelpDef, Profile, TierId } from '../types'
 import { checkedCount, dueDate, fmtLong, progressOf, todayISO } from '../utils'
 import { StatusSelect } from './Board'
-import NumberCalculator from './NumberCalculator'
+import NumberCalculator, { computeNumbers } from './NumberCalculator'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
@@ -172,6 +172,38 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
       if (f.bind) setProfile({ [f.bind]: v } as Partial<Profile>)
       else setAction(a.id, (x) => ({ ...x, fields: { ...x.fields, [f.id]: v as string | string[] } }))
     }
+    if (f.type === 'rhythm') {
+      const nums = computeNumbers(state)
+      const n = (k: string) => { const v = Number(p.fields[k]); return p.fields[k] ? v : 0 }
+      const weekly = n('outreach') + n('followups')
+      const need = nums.perWeekNeeded
+      const minOutreach = tier === 1 ? 5 : tier === 2 ? 3 : 0
+      // count: 0 → just show the weekly number pulled from Action 04
+      if (f.count === 0) return (
+        <div>
+          <p className="text-sm font-semibold">{f.label}</p>
+          <p className="mt-1.5 rounded-2xl bg-ink p-4 text-lg text-surface">
+            {need == null ? 'Finish the calculator in Action 04 to pull in your weekly number.' : <>You need <span className="pixel text-2xl">{need}</span> people to see your offer each week.</>}
+          </p>
+        </div>
+      )
+      return (
+        <div className="space-y-2">
+          <p className="text-sm font-semibold">{f.label}</p>
+          {need == null
+            ? <p className="rounded-2xl bg-bg p-4 text-sm">Finish the calculator in Action 04 to see your weekly number here.</p>
+            : <p className={`rounded-2xl p-4 font-semibold ${weekly >= need ? 'bg-success-soft text-success' : 'bg-highlight/70'}`}>
+                {weekly >= need
+                  ? <>Your rhythm hits your number: {weekly} people a week from outreach and follow-ups, and you need {need}. Content is extra.</>
+                  : <>Your rhythm is below your number. Add more outreach. It’s the fastest way to close the gap. ({weekly} a week now, you need {need}.)</>}
+              </p>}
+          {minOutreach > 0 && p.fields.outreach !== undefined && p.fields.outreach !== '' && n('outreach') < minOutreach && (
+            <p className="rounded-2xl bg-highlight/70 p-3 text-sm font-medium">{tier === 1 ? 'Tier 01 needs at least 5 people a week.' : 'Tier 02 needs at least 3 past buyers a week.'}</p>
+          )}
+          <p className="text-xs text-muted">Only outreach and follow-ups count toward your number, because posts don’t reach a fixed number of people. Content brings people to you, and reaching out brings them faster.</p>
+        </div>
+      )
+    }
     if (f.type === 'notice') {
       const on = f.notice!.when.every((k) => p.fields[k] === 'Yes')
       return on ? <p className="rounded-2xl bg-success-soft p-4 font-semibold text-success">{f.notice!.text}</p> : null
@@ -206,6 +238,17 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
       case 'textarea': input = <TextArea id={fid} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />; break
       case 'number': case 'currency':
         input = <NumberInput id={fid} currency={f.type === 'currency'} value={raw == null || raw === '' ? null : Number(raw)} onChange={(v) => f.bind ? write(v) : write(v == null ? '' : String(v))} />; break
+      case 'multi': {
+        const vals = Array.isArray(raw) ? raw : []
+        input = (
+          <div className="grid gap-2 sm:grid-cols-3">
+            {Array.from({ length: f.count ?? 3 }, (_, i) => (
+              <input key={i} aria-label={`${f.label} ${i + 1}`} className="field" placeholder={`Topic ${i + 1}`} value={vals[i] ?? ''}
+                onChange={(e) => { const next = Array.from({ length: f.count ?? 3 }, (_, j) => vals[j] ?? ''); next[i] = e.target.value; write(next) }} />
+            ))}
+          </div>
+        ); break
+      }
       case 'select': input = (
         <select id={fid} className="field" value={(raw as string) ?? ''} onChange={(e) => write(e.target.value)}>
           <option value="">Choose one</option>
@@ -234,10 +277,14 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
         </div>
       ); break
       case 'list': input = <ListInput id={fid} value={Array.isArray(raw) ? raw : []} onChange={write} placeholder={f.placeholder} />; break
-      default: input = <TextInput id={fid} type={f.type === 'url' ? 'url' : f.type === 'date' ? 'date' : 'text'} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />
+      default: input = <TextInput id={fid} type={f.type === 'url' ? 'url' : f.type === 'date' ? 'date' : f.type === 'time' ? 'time' : 'text'} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />
     }
     return (
-      <Field label={f.label} help={f.bind ? `${f.help ? f.help + ' ' : ''}Also updates your challenge setup.` : f.help} htmlFor={f.type === 'tier' ? undefined : fid}>
+      <Field label={(() => {
+        if (!f.labelFrom) return f.label
+        const v = state.actions[f.labelFrom.action ?? a.id]?.fields[f.labelFrom.field]
+        return typeof v === 'string' && v.trim() ? f.labelFrom.template.replace('{v}', v.trim()) : f.label
+      })()} help={f.bind ? `${f.help ? f.help + ' ' : ''}Also updates your challenge setup.` : f.help} htmlFor={f.type === 'tier' ? undefined : fid}>
         {input}
         {f.type === 'yesno' && raw === 'Not yet' && f.ifNotYet && <p className="rounded-xl bg-highlight/60 p-3 text-sm font-medium">{f.ifNotYet}</p>}
         {f.copyFrom && (() => {
@@ -289,7 +336,11 @@ function HelpBox({ help, values }: { help: HelpDef; values: Record<string, strin
         <div className="rounded-2xl border-bold border-ink bg-blush/40 p-4">
           <p className="label-caps !text-ink">In WMHQ</p>
           <p className="mt-2">{help.inWmhq.line}</p>
-          <a href={help.inWmhq.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1 font-bold underline underline-offset-4">{help.inWmhq.linkLabel} →</a>
+          <div className="mt-3 flex flex-col items-start gap-1">
+            {[{ label: help.inWmhq.linkLabel, url: help.inWmhq.url }, ...(help.inWmhq.more ?? [])].map((l) => (
+              <a key={l.url} href={l.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-bold underline underline-offset-4">{l.label} →</a>
+            ))}
+          </div>
         </div>
         <div className="rounded-2xl border-bold border-ink/20 bg-surface p-4">
           <p className="label-caps">Not in WMHQ yet</p>
