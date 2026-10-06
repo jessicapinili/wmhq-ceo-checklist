@@ -44,7 +44,7 @@ const SEEDS: Seed[] = [
   [12, 'sell', 'Recover & Repeat', 'Win back the “not yets” and turn buyers into your next sale.', 45],
   [13, 'optimise', 'Measure', 'See what’s working, what’s not, and where sales are being lost.', 49],
   [14, 'optimise', 'Fix the Bottleneck', 'Find the one step where buyers get stuck, and fix it.', 53],
-  [15, 'optimise', 'Double Down', 'Put more energy into the activities producing results.', 57],
+  [15, 'optimise', 'Double Down', 'Find what worked best, and do more of it.', 57],
   [16, 'optimise', 'Final Push and CEO Review', 'Finish strongly, record the result and choose the next milestone.', 60],
 ]
 
@@ -1027,6 +1027,63 @@ Use only my numbers. Don't suggest fixing other steps. Be direct. Simple words.`
   resources: [],
 }
 
+const ACTION_15: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know the one thing that brought you the most sales, and you are doing more of it.',
+  description: 'Find what is already working and do more of it. Pick your best-performing post, message, channel or offer, work out why it worked, and repeat it on purpose.',
+  why: `Most people find something that works, then drop it to try something new. A post gets great replies, so they never post about it again. Past clients buy, so they go chasing strangers. New feels exciting. Repeating feels boring. But boring is what makes money.
+
+Doubling down means taking your best result and doing it again, on purpose, more often. It's faster than inventing something new, because it's already proven to work for your buyer.
+
+To make room for it, you also need to stop doing one thing that isn't working. You don't have more time. You have to move it.`,
+  checklist: [
+    'Pick your one winner',
+    'Work out why it worked',
+    'Choose how you will do more of it',
+    'Choose one thing to stop doing',
+    'Write your 4-day double down plan',
+    'Complete your tier requirement',
+    'Check your results after 4 days',
+  ].map((label, i) => ({ id: `a15-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Made your first sale? Find exactly what led to it, like the post, message, person or place, and do it 5 more times this week. No sale yet? Double down on the thing that got the most replies, even if no one bought yet.',
+    2: 'Your winner is probably past buyers. Find the message or reason that brought them back, and send it to every past buyer you haven’t contacted yet.',
+    3: 'Find the winner that brought in the most cash, not the most likes. Work out how much one more round of it could bring in, and double down on that first.',
+  },
+  help: {
+    inWmhq: {
+      line: 'Use the Sales Page Audit Checklist under CEO Influence in the Vault to make sure the page you’re sending people to is ready for more traffic. Then open the WMHQ Market Research Builder in WMHQ Tools to find out exactly why your winner worked for your buyer, so you can repeat it on purpose.',
+      linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL,
+      more: [{ label: 'Open WMHQ Tools', url: WMHQ_TOOLS_URL }],
+    },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your offer] at [price]. The thing that worked best in my business recently was: [your winner]. It worked because people said or did: [what happened, like replies, sales or comments].
+
+Help me double down on it. Give me:
+1. The real reason it worked, in one sentence
+2. 3 ways to repeat it exactly
+3. 3 ways to remix it, with the same idea in a new format or angle
+4. 1 way to reach more people with it
+
+Then turn the best ideas into a simple 4-day plan. Keep everything tied to my offer. No brand new ideas. Simple words.`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'doubledown',
+  fields: [
+    { id: 't1Five', label: 'Your 5 more times this week', type: 'tracklist', tiers: [1], placeholder: 'Who or where, e.g. Sent to Kate', help: 'Do the thing that led to your sale, or got the most replies, 5 more times. Tick each one off.' },
+    { id: 't2Message', label: 'The message or reason that brought past buyers back', type: 'textarea', tiers: [2] },
+    { id: 't2Left', label: 'Past buyers you haven’t contacted yet', type: 'tracklist', tiers: [2], placeholder: 'First name', help: 'Tick each one once you have sent it.' },
+    { id: 't3Cash', label: 'Cash your winner brought in', type: 'currency', tiers: [3] },
+    { id: 't3Round', label: 'What one more round of it could bring in', type: 'currency', tiers: [3] },
+  ],
+  proof: ['Post your winner and why it worked, in one sentence. Example: “My winner was messaging past clients directly. It worked because they already trusted me.”'],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -1051,7 +1108,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : number === 14 ? ACTION_14 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : number === 13 ? ACTION_13 : number === 14 ? ACTION_14 : number === 15 ? ACTION_15 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

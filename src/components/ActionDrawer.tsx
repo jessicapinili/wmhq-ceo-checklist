@@ -11,6 +11,7 @@ import MaybesWorkspace from './MaybesWorkspace'
 import RecoverRepeat from './RecoverRepeat'
 import MeasureWorkspace from './MeasureWorkspace'
 import BottleneckWorkspace from './BottleneckWorkspace'
+import DoubleDownWorkspace from './DoubleDownWorkspace'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
@@ -125,6 +126,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             {a.calculator === 'recover' && <div className="mb-6"><RecoverRepeat actionId={a.id} /></div>}
             {a.calculator === 'measure' && <div className="mb-6"><MeasureWorkspace actionId={a.id} /></div>}
             {a.calculator === 'bottleneck' && <div className="mb-6"><BottleneckWorkspace actionId={a.id} /></div>}
+            {a.calculator === 'doubledown' && <div className="mb-6"><DoubleDownWorkspace actionId={a.id} /></div>}
             <div className="space-y-5">
               {a.fields.filter((f) => !f.tiers && (!f.onlyTiers || (tier && f.onlyTiers.includes(tier))) && (!f.showIf || f.showIf.equals.includes(String(p.fields[f.showIf.field] ?? '')))).map((f) => (
                 <div key={f.id}>

@@ -66,7 +66,7 @@ export interface ActionDef {
   tierIntro?: string
   help?: HelpDef
   /** Built-in interactive tool shown at the top of the workspace. */
-  calculator?: 'reverse-engineer' | 'pattern-quiz' | 'maybes' | 'recover' | 'measure' | 'bottleneck'
+  calculator?: 'reverse-engineer' | 'pattern-quiz' | 'maybes' | 'recover' | 'measure' | 'bottleneck' | 'doubledown'
   dueDay: number // day of challenge (1–60)
   checklist: { id: string; label: string }[]
   tierRequirements: Record<TierId, string>
