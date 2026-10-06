@@ -83,7 +83,7 @@ export default function NumberCalculator({ actionId }: { actionId: string }) {
       <Step n={3} title="How do people buy from you?">
         <div role="radiogroup" aria-label="How people buy" className="grid gap-3 sm:grid-cols-2">
           {([['page', 'From a sales page or checkout', 'They land on a page and buy.'], ['conversation', 'From conversations', 'DMs, calls, emails or enquiries.']] as const).map(([id, title, sub]) => (
-            <label key={id} className={`cursor-pointer rounded-2xl border-bold p-4 ${mode === id ? 'border-ink bg-blush shadow-card' : 'border-line bg-surface hover:border-ink/50'}`}>
+            <label key={id} className={`relative cursor-pointer rounded-2xl border-bold p-4 ${mode === id ? 'border-ink bg-blush shadow-card' : 'border-line bg-surface hover:border-ink/50'}`}>
               <input type="radio" name={`${actionId}-mode`} className="sr-only" checked={mode === id} onChange={() => set('calcMode', id)} />
               <span className="block font-bold">{title}</span>
               <span className="block text-sm text-muted">{sub}</span>

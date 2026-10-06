@@ -116,7 +116,12 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
             {a.calculator === 'reverse-engineer' && <div className="mb-6"><NumberCalculator actionId={a.id} /></div>}
             <div className="space-y-5">
-              {a.fields.filter((f) => !f.tiers).map((f) => <div key={f.id}>{renderField(f)}</div>)}
+              {a.fields.filter((f) => !f.tiers).map((f) => (
+                <div key={f.id}>
+                  {f.group && <div className="mb-4 mt-8 border-t border-line pt-6"><h4 className="text-lg font-bold">{f.group.title}</h4>{f.group.intro && <p className="text-muted">{f.group.intro}</p>}</div>}
+                  {renderField(f)}
+                </div>
+              ))}
             </div>
           </Section>
 
@@ -173,12 +178,28 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
       case 'textarea': input = <TextArea id={fid} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />; break
       case 'number': case 'currency':
         input = <NumberInput id={fid} currency={f.type === 'currency'} value={raw == null || raw === '' ? null : Number(raw)} onChange={(v) => f.bind ? write(v) : write(v == null ? '' : String(v))} />; break
+      case 'select': input = (
+        <select id={fid} className="field" value={(raw as string) ?? ''} onChange={(e) => write(e.target.value)}>
+          <option value="">Choose one</option>
+          {f.options?.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      ); break
+      case 'yesno': input = (
+        <div role="radiogroup" aria-label={f.label} className="flex gap-2">
+          {['Yes', 'Not yet'].map((o) => (
+            <label key={o} className={`relative cursor-pointer rounded-pill border-bold px-5 py-2 text-sm font-semibold ${raw === o ? (o === 'Yes' ? 'border-success bg-success-soft text-success' : 'border-ink bg-highlight') : 'border-line bg-surface hover:border-ink/50'}`}>
+              <input type="radio" className="sr-only" name={fid} checked={raw === o} onChange={() => write(o)} />{o}
+            </label>
+          ))}
+        </div>
+      ); break
       case 'list': input = <ListInput id={fid} value={Array.isArray(raw) ? raw : []} onChange={write} placeholder={f.placeholder} />; break
       default: input = <TextInput id={fid} type={f.type === 'url' ? 'url' : f.type === 'date' ? 'date' : 'text'} value={(raw as string) ?? ''} onChange={write} placeholder={f.placeholder} />
     }
     return (
       <Field label={f.label} help={f.bind ? `${f.help ? f.help + ' ' : ''}Also updates your challenge setup.` : f.help} htmlFor={f.type === 'tier' ? undefined : fid}>
         {input}
+        {f.type === 'yesno' && raw === 'Not yet' && f.ifNotYet && <p className="rounded-xl bg-highlight/60 p-3 text-sm font-medium">{f.ifNotYet}</p>}
         {f.copyFrom && (() => {
           const src = state.actions[f.copyFrom.action]?.fields[f.copyFrom.field]
           const text = typeof src === 'string' ? src.trim() : ''

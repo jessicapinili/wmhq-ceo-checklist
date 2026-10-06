@@ -193,7 +193,7 @@ export function TierPicker({ value, onChange, name }: { value: TierId | null; on
       {([1, 2, 3] as TierId[]).map((t) => {
         const on = value === t
         return (
-          <label key={t} className={`cursor-pointer rounded-card border-bold p-4 transition-all ${on ? 'border-ink bg-blush shadow-card' : 'border-line bg-surface hover:border-ink/50'}`}>
+          <label key={t} className={`relative cursor-pointer rounded-card border-bold p-4 transition-all ${on ? 'border-ink bg-blush shadow-card' : 'border-line bg-surface hover:border-ink/50'}`}>
             <input type="radio" name={name} className="sr-only" checked={on} onChange={() => onChange(t)} />
             <span className="pixel block text-lg text-accent">{TIERS[t].short.toUpperCase()}</span>
             <span className="block text-lg font-bold">{TIERS[t].name}</span>

@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'
@@ -22,6 +22,12 @@ export interface FieldDef {
   copyFrom?: { action: string; field: string; label: string }
   /** Worked examples shown in a small "See examples" dropdown under the field. */
   examples?: { label: string; text: string }[]
+  /** Choices for a 'select' field. */
+  options?: string[]
+  /** For a 'yesno' field: message shown when she picks "Not yet". */
+  ifNotYet?: string
+  /** Small heading shown above this field to start a new group. */
+  group?: { title: string; intro?: string }
 }
 
 /** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */

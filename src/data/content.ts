@@ -273,6 +273,69 @@ Views, likes and followers do not count here. Only people who are looking at you
   resources: [],
 }
 
+const ACTION_05: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'Anyone who finds you can tell what you sell and how to buy it in under 10 seconds.',
+  description: 'Make it clear what you sell and how someone can buy. Fix your bio, your link, and the one place people go to learn about your offer, so nobody has to guess.',
+  why: `Before anyone buys, they check you out. They look at your bio, your link, or your website. If they can't tell what you sell, they leave, and you never even know they were there.
+
+You don't need a fancy website or a big launch. You need the minimum: one clear sentence about what you sell, one link that goes to your offer, and one clear next step. That's enough to make sales.`,
+  checklist: [
+    'Choose the one main place people find you',
+    'Update your bio with your offer one-liner',
+    'Set one link that goes straight to your offer',
+    'Check your offer page, menu or post is up to date',
+    'Write your call to action',
+    'Pin a post about your offer',
+    'Complete your tier requirement',
+    'Do the stranger test',
+  ].map((label, i) => ({ id: `a05-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Make your offer visible for the first time. Your bio, link and pinned post must all mention the offer from Action 03. Ask 1 person who doesn’t know your business to look at your profile for 10 seconds, then tell you what you sell.',
+    2: 'Make it easy for past buyers to buy again. Add a clear “buy again” or “book again” option to your link or offer page, and check your pinned post shows the offer you are selling in this challenge, not an old one.',
+    3: 'Clean up the clutter. Remove or hide any old offers, links or posts that pull attention away from your main offer. One main offer should be front and centre everywhere. Write down what you removed.',
+  },
+  help: {
+    inWmhq: { line: 'Open the Revenue Events Dashboard inside WMHQ Personal Portal. It shows you how to set up your profile so it sells for you.', linkLabel: 'Open the WMHQ Personal Portal', url: WMHQ_PORTAL_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `Here is my offer one-liner: [paste from Action 03]. My buyer is: [paste buyer sentence from Action 02]. I sell on [platform], and I want people to [DM me / book a call / buy now / enquire].
+
+Write 3 different calls to action I can use in my bio and pinned post. Each one must tell people exactly what to do next and why they should do it now. Keep each under 15 words. No hype, simple words.`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't1AllMention', label: 'Do your bio, link and pinned post all mention your offer from Action 03?', type: 'yesno', tiers: [1], ifNotYet: 'Update whichever one is missing it, then tick this again.' },
+    { id: 't2BuyAgain', label: 'Your “buy again” or “book again” link', type: 'url', tiers: [2], placeholder: 'https://' },
+    { id: 't2PinnedCurrent', label: 'Does your pinned post show the offer you are selling in this challenge?', type: 'yesno', tiers: [2], ifNotYet: 'Swap it for a post about your current offer.' },
+    { id: 't3Removed', label: 'What you removed or hid', type: 'list', tiers: [3], placeholder: 'e.g. Old freebie link in bio' },
+    // Shared workspace
+    { id: 'mainPlace', label: 'Where do people find you most?', type: 'text', placeholder: 'e.g. Instagram', help: 'Instagram, TikTok, your website, LinkedIn, email list or a shopfront. Pick one main place.' },
+    { id: 'bio', label: 'Your new bio', type: 'textarea', help: 'Use your offer one-liner from Action 03. Keep it short.', copyFrom: { action: 'a03', field: 'oneLiner', label: 'Paste from Action 03' } },
+    { id: 'mainLink', label: 'Your main link', type: 'url', placeholder: 'https://', help: 'This must go straight to your offer, booking page or checkout. Not your home page.' },
+    { id: 'offerPage', label: 'Your offer page, menu or post', type: 'url', placeholder: 'https://', help: 'Where can someone read about the offer and its price?' },
+    { id: 'ctaType', label: 'What do you want people to do?', type: 'select', options: ['DM me', 'Book a call', 'Buy now', 'Enquire', 'Other'] },
+    { id: 'cta', label: 'Your call to action', type: 'text', placeholder: 'The exact words people will see',
+      help: 'Tell them what to do and what they get. Examples: “DM me SLEEP for the kit details.” “Book a free 15-minute call to see if it suits you.” “Shop the starter set below.”' },
+    { id: 'pinned', label: 'Your pinned post', type: 'url', placeholder: 'https://', help: 'Paste the link to the post you pinned.' },
+    { id: 'strangerSaid', label: 'What did they say you sell?', type: 'textarea',
+      group: { title: 'The stranger test', intro: 'Ask someone who doesn’t know your business to look at your profile for 10 seconds.' } },
+    { id: 'strangerMatch', label: 'Did it match your offer?', type: 'yesno', ifNotYet: 'Fix your bio, link or pinned post, then test again.' },
+    { id: 'strangerClicks', label: 'Could they get to the buy or book page in 2 clicks or fewer?', type: 'yesno', ifNotYet: 'Fix your bio, link or pinned post, then test again.' },
+  ],
+  proof: [
+    'A screenshot of your updated bio and link',
+    'Your call to action',
+    'Your pinned post',
+    'Your stranger test result: what they said you sell',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -297,7 +360,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
