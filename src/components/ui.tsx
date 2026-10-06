@@ -1,4 +1,4 @@
-import { Check, CircleCheck, Plus, Trash2, X } from 'lucide-react'
+import { Check, CircleCheck, CircleHelp, Plus, Trash2, X } from 'lucide-react'
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { useStore } from '../store'
 import { TIERS } from '../data/content'
@@ -85,12 +85,62 @@ export function SaveIndicator({ manual }: { manual?: boolean }) {
 
 /* ---------- Form fields ---------- */
 
-export function Field({ label, help, children, htmlFor }: { label: string; help?: string; children: ReactNode; htmlFor?: string }) {
+/** Small "?" next to a label. Opens on hover, keyboard focus or tap, so it works on phones too. */
+export function HelpTip({ text, label }: { text: string; label: string }) {
+  const [open, setOpen] = useState(false)
+  const [pinned, setPinned] = useState(false)
+  const id = useId()
+  const ref = useRef<HTMLSpanElement>(null)
+  useEffect(() => {
+    if (!pinned) return
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !ref.current?.contains(e.target as Node)) { setPinned(false); setOpen(false) }
+    }
+    document.addEventListener('mousedown', close); document.addEventListener('keydown', close)
+    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('keydown', close) }
+  }, [pinned])
+  const show = open || pinned
+  // Fixed position, clamped to the window, so the bubble is never cut off by a panel edge.
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null)
+  useEffect(() => {
+    if (!show || !ref.current) return
+    const r = ref.current.getBoundingClientRect()
+    const w = Math.min(256, window.innerWidth - 24)
+    setPos({ left: Math.max(12, Math.min(r.left + r.width / 2 - w / 2, window.innerWidth - w - 12)), top: r.bottom + 6 })
+  }, [show])
+  // Close when anything scrolls, since a fixed bubble would otherwise drift away from its "?".
+  useEffect(() => {
+    if (!show) return
+    const close = () => { setOpen(false); setPinned(false) }
+    window.addEventListener('scroll', close, true)
+    return () => window.removeEventListener('scroll', close, true)
+  }, [show])
+  return (
+    <span ref={ref} className="relative inline-flex align-middle" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button type="button" aria-label={`Help: ${label}`} aria-describedby={show ? id : undefined} aria-expanded={show}
+        onClick={() => setPinned(!pinned)} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}
+        className="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full text-accent hover:text-ink">
+        <CircleHelp size={17} />
+      </button>
+      {show && pos && (
+        <span id={id} role="tooltip" style={{ left: pos.left, top: pos.top, width: Math.min(256, window.innerWidth - 24) }}
+          className="fixed z-[70] rounded-xl border-bold border-ink bg-surface p-3 text-sm font-normal leading-snug text-ink shadow-card">
+          {text}
+        </span>
+      )}
+    </span>
+  )
+}
+
+export function Field({ label, help, error, children, htmlFor }: { label: string; help?: string; error?: string; children: ReactNode; htmlFor?: string }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-semibold">{label}</label>
+      <div className="flex items-center">
+        <label htmlFor={htmlFor} className="text-sm font-semibold">{label}</label>
+        {help && <HelpTip text={help} label={label} />}
+      </div>
       {children}
-      {help && <p className="text-sm text-muted">{help}</p>}
+      {error && <p role="alert" className="text-sm font-medium text-danger">{error}</p>}
     </div>
   )
 }

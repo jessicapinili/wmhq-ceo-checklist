@@ -5,7 +5,7 @@ import { useStore } from '../store'
 import type { FieldDef, HelpDef, Profile, TierId } from '../types'
 import { checkedCount, dueDate, fmtLong, progressOf, todayISO } from '../utils'
 import { StatusSelect } from './Board'
-import { Checkbox, Field, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
+import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
   id: string; onClose: () => void; onNavigate: (id: string) => void; onRequestComplete: (id: string) => void; onRequestTier: (t: TierId) => void
@@ -49,7 +49,8 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             <p className="mt-2 text-lg font-semibold">{a.outcome}</p>
             {a.description && <p className="mt-2 text-muted">{a.description}</p>}
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
-              <span className="label-caps">Due {fmtLong(dueDate(state, a))}</span>
+              <span className="label-caps">Aim to finish by {fmtLong(dueDate(state, a))}</span>
+              <HelpTip label="Target date" text="A rough target to keep you on track. It’s not a hard deadline. You can work ahead or catch up any time." />
               <label htmlFor="drawer-status" className="sr-only">Status</label>
               <StatusSelect id="drawer-status" value={p.status} onChange={(s) => s === 'complete' ? onRequestComplete(a.id) : setAction(a.id, (x) => ({ ...x, status: s }))} />
             </div>
@@ -114,6 +115,9 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             <div className="space-y-4 rounded-2xl bg-cream/60 p-4">
               <Field label="Community post link" htmlFor="pf-link"><TextInput id="pf-link" type="url" placeholder="https://" value={p.proof.link} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, link: v } }))} /></Field>
               <Field label="Written proof note" htmlFor="pf-note"><TextArea id="pf-note" value={p.proof.note} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, note: v } }))} /></Field>
+              <Field label="More proof" htmlFor="pf-more" help="Add as many extra links or notes as you like, such as screenshots, DMs or results.">
+                <ListInput id="pf-more" value={p.proof.more ?? []} placeholder="Another link or note" onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, more: v } }))} />
+              </Field>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Checkbox label="Proof posted" checked={p.proof.posted} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, posted: v, date: v && !x.proof.date ? todayISO() : x.proof.date } }))} />
                 <Field label="Date posted" htmlFor="pf-date"><TextInput id="pf-date" type="date" value={p.proof.date} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, date: v } }))} /></Field>

@@ -32,7 +32,7 @@ export default function Settings({ onRequestTier, onImport }: { onRequestTier: (
             <Field label="Primary offer" htmlFor="st-offer"><TextInput id="st-offer" value={p.offer} onChange={(v) => setProfile({ offer: v })} /></Field>
             <Field label="Offer price" htmlFor="st-price"><NumberInput id="st-price" currency value={p.offerPrice} onChange={(v) => setProfile({ offerPrice: v })} /></Field>
             <Field label="Challenge start date" htmlFor="st-start"><TextInput id="st-start" type="date" value={p.startDate} onChange={(v) => v && setProfile({ startDate: v })} /></Field>
-            <Field label="Challenge end date" htmlFor="st-end" help={p.endDate <= p.startDate ? 'The end date needs to be after the start date.' : undefined}><TextInput id="st-end" type="date" value={p.endDate} onChange={(v) => v && setProfile({ endDate: v })} /></Field>
+            <Field label="Challenge end date" htmlFor="st-end" error={p.endDate <= p.startDate ? 'The end date needs to be after the start date.' : undefined}><TextInput id="st-end" type="date" value={p.endDate} onChange={(v) => v && setProfile({ endDate: v })} /></Field>
           </div>
           {p.endDate !== addDays(p.startDate, CHALLENGE_DAYS - 1) && (
             <button className="text-sm font-semibold underline" onClick={() => setProfile({ endDate: addDays(p.startDate, CHALLENGE_DAYS - 1) })}>Set end date to 60 days ({fmtLong(addDays(p.startDate, CHALLENGE_DAYS - 1))})</button>

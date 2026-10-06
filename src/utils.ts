@@ -24,7 +24,7 @@ export const challengeDay = (state: AppState) => daysBetween(state.profile.start
 export const phaseForDay = (day: number): PhaseId =>
   (PHASES.find((p) => day >= p.days[0] && day <= p.days[1]) ?? (day < 1 ? PHASES[0] : PHASES[3])).id
 
-export const emptyProgress = (): ActionProgress => ({ checked: {}, fields: {}, notes: '', proof: { link: '', note: '', posted: false, date: '' }, status: 'not_started' })
+export const emptyProgress = (): ActionProgress => ({ checked: {}, fields: {}, notes: '', proof: { link: '', note: '', posted: false, date: '', more: [] }, status: 'not_started' })
 export const progressOf = (state: AppState, id: string) => state.actions[id] ?? emptyProgress()
 export const checkedCount = (state: AppState, a: ActionDef) => a.checklist.filter((c) => progressOf(state, a.id).checked[c.id]).length
 

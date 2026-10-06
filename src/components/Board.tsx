@@ -105,7 +105,7 @@ function Card({ a, onOpen, setStatus, compact }: { a: ActionDef; onOpen: (id: st
     <article className={`rounded-2xl border-bold bg-surface p-4 transition-shadow hover:shadow-card ${done ? 'border-success/40' : 'border-ink'}`}>
       <div className="flex items-center justify-between gap-2">
         <span className="pixel text-lg leading-none text-accent">ACTION {String(a.number).padStart(2, '0')}</span>
-        <span className={`text-xs font-semibold uppercase tracking-wider ${overdue ? 'text-danger' : 'text-accent'}`}>{overdue ? 'Overdue · ' : 'Due '}{fmtDate(due)}</span>
+        <span className={`text-xs font-semibold uppercase tracking-wider ${overdue ? 'text-danger' : 'text-accent'}`}>{overdue ? 'Catch up · aimed for ' : 'Aim for '}{fmtDate(due)}</span>
       </div>
       <h3 className={`mt-1.5 text-lg font-bold leading-snug ${done ? 'text-muted' : ''}`}>
         {done && <CheckCircle2 size={18} className="mr-1 inline -translate-y-0.5 text-success" aria-label="Complete" />}{a.title}

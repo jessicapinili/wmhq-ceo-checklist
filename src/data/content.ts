@@ -77,7 +77,9 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
 
 // Links used in the "Get help with this" boxes.
 export const WMHQ_VAULT_URL = 'https://www.jessicapinili.com/login'
-export const JOIN_WMHQ_URL = '' // TODO: Join WMHQ sales page. The link is hidden until this is set.
+export const JOIN_WMHQ_URL = 'https://womanmasteryhq.com/joinmembership'
+export const WMHQ_PORTAL_URL = 'https://womanmasteryhqportal.com'
+export const WMHQ_TOOLS_URL = 'https://tools.womanmasteryhqportal.com/'
 
 const ACTION_02: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
   placeholder: false,
@@ -138,7 +140,12 @@ No generic answers. Then write: I help [who] get [what they want] without [what 
       help: 'Fill in: I help [who] get [what they want] without [what they are worried about], even if they have already tried [what did not work].',
       compose: 'I help {who} get {want} without {worried}, even if they have already tried {tried}.' },
   ],
-  proof: [],
+  proof: [
+    'Your buyer sentence',
+    'The one type of person you are selling to',
+    'One thing a real buyer said, word for word (remove names)',
+    'Your tier requirement: how many conversations, past buyers or top clients you used',
+  ],
   resources: [],
 }
 

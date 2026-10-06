@@ -9,7 +9,7 @@ export default function Info() {
       <div className="space-y-5">
         <Block title="Challenge dates">
           <p>The challenge runs for 60 days, from <strong>Monday 19 October 2026</strong> (9:30am AEST) to <strong>Thursday 17 December 2026</strong>.</p>
-          <p className="mt-2 text-muted">Every action has a due date counted from your start date, so you always know your next move. You can start selling at any point.</p>
+          <p className="mt-2 text-muted">Every action has a rough target date, counted from your start date, to keep you on track. It’s a guide, not a hard deadline. You can start selling at any point.</p>
         </Block>
         <Block title="The three tiers">
           <ul className="space-y-3">

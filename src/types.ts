@@ -59,7 +59,7 @@ export interface Profile {
   endDate: string
 }
 
-export interface Proof { link: string; note: string; posted: boolean; date: string }
+export interface Proof { link: string; note: string; posted: boolean; date: string; more: string[] }
 
 export interface ActionProgress {
   checked: Record<string, boolean>
