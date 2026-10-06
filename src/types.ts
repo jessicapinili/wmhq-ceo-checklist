@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'
@@ -22,6 +22,8 @@ export interface FieldDef {
   copyFrom?: { action: string; field: string; label: string }
   /** Worked examples shown in a small "See examples" dropdown under the field. */
   examples?: { label: string; text: string }[]
+  /** Choices for a 'cards' field: big clickable cards with a short description. */
+  cards?: { title: string; desc: string; best?: string }[]
   /** Choices for a 'select' field. */
   options?: string[]
   /** For a 'yesno' field: message shown when she picks "Not yet". */

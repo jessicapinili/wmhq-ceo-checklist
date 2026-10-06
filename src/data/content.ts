@@ -336,6 +336,83 @@ Write 3 different calls to action I can use in my bio and pinned post. Each one 
   resources: [],
 }
 
+const ACTION_06: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You have one clear way for the right person to raise their hand, and it leads straight to your offer.',
+  description: 'Give the right buyer one reason to raise their hand. Create one free or low-cost way in that solves a small problem and makes them want your offer next.',
+  why: `Most people won't buy the first time they see you. They need a small, easy first step. That step is your way in. It could be a free call, a sample, a checklist or a quiz.
+
+A good way in does two jobs. It gives them a quick win, and it makes them want more, which is your offer. If it solves everything for free, they won't need to buy. If it has nothing to do with your offer, you'll attract people who will never buy.
+
+One way in is enough. Build it now, but don't promote it yet. In Action 07 you will build what happens after someone takes it.`,
+  checklist: [
+    'Choose your type of way in',
+    'Name it',
+    'Write the one problem it solves',
+    'Write how it leads to your offer',
+    'Write who it is not for',
+    'Choose how people get it',
+    'Complete your tier requirement',
+    'Make it ready to deliver (but don’t promote it yet)',
+  ].map((label, i) => ({ id: `a06-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Keep it simple and fast. Choose a DM keyword or a free call as your way in, not a big free guide. You need conversations, not an email list. It should take you less than 2 hours to set up.',
+    2: 'Make a way back in for past buyers. Examples include early access, a returning client offer, a refill or top-up reminder, or a free check-in call. Write down which 3 past buyers you will offer it to first.',
+    3: 'Make a way in that attracts your best buyers, not freebie hunters. It should only appeal to people who can afford your main offer. Add one filter question, like their budget, business stage or timeline, so you know who is ready before you talk to them.',
+  },
+  help: {
+    inWmhq: { line: 'Open the Lead Magnet Builder in the WMHQ Tools hub. Enter your buyer and offer, and it helps you build a way in that leads to the sale.', linkLabel: 'Open WMHQ Tools', url: WMHQ_TOOLS_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `My buyer is: [paste buyer sentence from Action 02].
+My offer is: [paste one-liner from Action 03].
+
+Help me create one free way in that makes this buyer want my offer next. Choose the best type from these five: Diagnose (quiz or scorecard), Shortcut (template or checklist), Teach (mini training), Experience (challenge, trial, sample or free call), or Curate (toolkit or calculator).
+
+Give me 3 ideas, each using a different type. For each idea, tell me:
+1. The type and the name
+2. The one small problem it solves
+3. Why it makes them want my offer, without solving everything my offer solves
+
+No generic ideas. Simple words.`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't1Simple', label: 'Is your way in a DM keyword or a free call that takes under 2 hours to set up?', type: 'yesno', tiers: [1], ifNotYet: 'Swap it for a DM keyword or a free call. You need conversations, not an email list.' },
+    { id: 't2Buyers', label: 'The 3 past buyers you will offer it to first', type: 'list', tiers: [2], placeholder: 'Name' },
+    { id: 't3Filter', label: 'Your filter question', type: 'text', tiers: [3], placeholder: 'e.g. What is your budget for this?', help: 'Like their budget, business stage or timeline, so you know who is ready before you talk to them.' },
+    // Shared workspace
+    { id: 'type', label: 'What type of way in is it?', type: 'cards', help: 'Choose the one that fits how you sell and where your buyer gets stuck.',
+      cards: [
+        { title: 'Diagnose', desc: 'Quiz or scorecard. Shows them what is wrong and where they are stuck.', best: 'coaches, service providers and product brands.' },
+        { title: 'Shortcut', desc: 'Template or checklist. Saves them time on one task.', best: 'service providers, product businesses and done-for-you services.' },
+        { title: 'Teach', desc: 'Mini training or masterclass. Explains one thing they get wrong.', best: 'coaches, consultants and higher-priced offers.' },
+        { title: 'Experience', desc: 'Challenge, trial, sample or free call. Lets them try a small taste of working with you.', best: 'memberships, coaches, communities and product samples.' },
+        { title: 'Curate', desc: 'Toolkit or calculator. Gives them the right tools or numbers in one place.', best: 'product, service, ops-heavy or tech niches.' },
+      ] },
+    { id: 'name', label: 'What is it called?', type: 'text', help: 'Say what they get. “The 5-Minute Skin Check” is better than “My Free Gift”.' },
+    { id: 'problem', label: 'What one problem does it solve?', type: 'textarea', help: 'Pick one small problem from your buyer’s struggles in Action 02. Just one.' },
+    { id: 'leadsTo', label: 'How does it lead to your offer?', type: 'textarea', placeholder: 'Once they have this, they will want my offer because…', help: 'Finish this sentence: “Once they have this, they will want my offer because…”' },
+    { id: 'notFor', label: 'Who is it not for?', type: 'textarea', help: 'Who would take it but never buy? Name them, so you don’t write it for them.' },
+    { id: 'how', label: 'How do people get it?', type: 'select', options: ['Send a DM keyword', 'Fill in a form', 'Book a call', 'Click a link', 'In person'] },
+    { id: 'howWords', label: 'The exact words people will see', type: 'text', placeholder: 'DM me CALM and I’ll send you the 3-step plan.', help: 'Example: “DM me CALM and I’ll send you the 3-step plan.”' },
+    { id: 'readyMade', label: 'Is the free thing made or ready to send?', type: 'yesno', ifNotYet: 'Finish this before Action 07. Don’t promote it yet.',
+      group: { title: 'Is it ready to deliver?' } },
+    { id: 'readyScript', label: 'Do you know what you will say or send when someone asks for it?', type: 'yesno', ifNotYet: 'Finish this before Action 07. Don’t promote it yet.' },
+  ],
+  proof: [
+    'The name of your way in and its type',
+    'The one problem it solves',
+    'How people get it: the exact words they will see',
+    'Your tier requirement: why it is quick to set up, the 3 past buyers you will offer it to, or your filter question',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -360,7 +437,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

@@ -184,6 +184,18 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           {f.options?.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
       ); break
+      case 'cards': input = (
+        <div role="radiogroup" aria-label={f.label} className="grid gap-2 sm:grid-cols-2">
+          {f.cards?.map((c) => (
+            <label key={c.title} className={`relative cursor-pointer rounded-2xl border-bold p-4 ${raw === c.title ? 'border-ink bg-blush shadow-card' : 'border-line bg-surface hover:border-ink/50'}`}>
+              <input type="radio" className="sr-only" name={fid} checked={raw === c.title} onChange={() => write(c.title)} />
+              <span className="block font-bold">{c.title}</span>
+              <span className="mt-1 block text-sm">{c.desc}</span>
+              {c.best && <span className="mt-1 block text-xs text-muted">Best for {c.best}</span>}
+            </label>
+          ))}
+        </div>
+      ); break
       case 'yesno': input = (
         <div role="radiogroup" aria-label={f.label} className="flex gap-2">
           {['Yes', 'Not yet'].map((o) => (
