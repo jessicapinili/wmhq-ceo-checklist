@@ -62,7 +62,7 @@ export default function Setup({ onDone }: { onDone: () => void }) {
             <Field label="First name" htmlFor="s-name"><TextInput id="s-name" value={p.firstName} onChange={(v) => set({ firstName: v })} placeholder="First name" /></Field>
             <Field label="Last name" htmlFor="s-last"><TextInput id="s-last" value={p.lastName} onChange={(v) => set({ lastName: v })} placeholder="Last name" /></Field>
           </div>
-          <Field label="Email" htmlFor="s-email" help="This is the email you used to sign up to the WMHQ CEO Checklist Challenge. To use a different one, log out and log in again.">
+          <Field label="Email" htmlFor="s-email" help="This is the email you used to sign up to The Next 60. To use a different one, log out and log in again.">
             <input id="s-email" className="field bg-bg/60 text-muted" value={p.email} readOnly />
           </Field>
         </>}
@@ -117,7 +117,8 @@ const H = ({ children }: { children: React.ReactNode }) => <h1 className="text-2
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-cream px-4 py-10">
-      <p className="pixel mb-6 text-center text-3xl leading-none sm:text-5xl">THE WMHQ CEO<br />CHECKLIST CHALLENGE</p>
+      <p className="pixel text-center text-4xl leading-none sm:text-6xl">THE NEXT 60</p>
+      <p className="mb-6 mt-2 max-w-md text-center text-muted">The step-by-step checklist to hit your next revenue milestone in 60 days.</p>
       <main className="card w-full max-w-2xl p-6 sm:p-10">{children}</main>
     </div>
   )

@@ -22,7 +22,7 @@ export const defaultState = (m?: Member): AppState => ({
 export function normalise(raw: unknown): AppState {
   if (!raw || typeof raw !== 'object') throw new Error('This file does not contain challenge progress.')
   const r = raw as Partial<AppState>
-  if (r.version !== 1 || !r.profile) throw new Error('This file is not a CEO Checklist export.')
+  if (r.version !== 1 || !r.profile) throw new Error('This file is not a progress export from The Next 60.')
   const d = defaultState()
   const actions: Record<string, ActionProgress> = {}
   for (const [k, v] of Object.entries(r.actions ?? {})) {
@@ -87,7 +87,7 @@ export function StoreProvider({ children, member }: { children: ReactNode; membe
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     const name = state.profile.firstName ? state.profile.firstName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' : ''
-    a.download = `ceo-checklist-${name}${new Date().toISOString().slice(0, 10)}.json`
+    a.download = `the-next-60-${name}${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     setTimeout(() => URL.revokeObjectURL(a.href), 1000)
   }, [state])

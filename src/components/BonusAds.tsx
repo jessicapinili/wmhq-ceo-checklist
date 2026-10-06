@@ -43,11 +43,11 @@ export function BonusCard({ onOpen }: { onOpen: () => void }) {
   return (
     <article className="bonus-card rounded-2xl border-bold border-[var(--c-bonus-accent)] bg-[var(--c-bonus-bg)] p-4">
       <Eyebrow>Bonus · Tier 03</Eyebrow>
-      <h3 className="mt-1.5 text-lg font-bold leading-snug text-ink">Meta Ads: Your Next 60 Days</h3>
+      <h3 className="mt-1.5 text-lg font-bold leading-snug text-ink">Meta Ads: After the 60</h3>
       <p className="mt-1 text-sm text-ink/80">Ready to grow beyond organic? Check if ads are right for you yet, and how to start without wasting money.</p>
       {state.profile.tier !== 3 && <p className="mt-2 rounded-xl bg-surface/70 p-2.5 text-xs font-medium text-ink">Built for Tier 03. Hit your milestone first, then come back to this.</p>}
       <button onClick={onOpen} className="mt-3 inline-flex items-center gap-1 rounded-pill text-sm font-bold text-ink underline-offset-4 hover:underline">
-        Open bonus <ArrowRight size={15} /><span className="sr-only">: Meta Ads, Your Next 60 Days</span>
+        Open bonus <ArrowRight size={15} /><span className="sr-only">: Meta Ads, After the 60</span>
       </button>
     </article>
   )
@@ -94,7 +94,7 @@ export function BonusDrawer({ onClose }: { onClose: () => void }) {
           {/* 1 */}
           <header className="bonus-card rounded-2xl bg-[var(--c-bonus-bg)] p-5">
             <Eyebrow>Bonus · Tier 03</Eyebrow>
-            <h2 id="bonus-title" tabIndex={-1} className="mt-1 text-3xl font-bold text-ink outline-none sm:text-4xl">Meta Ads: Your Next 60 Days</h2>
+            <h2 id="bonus-title" tabIndex={-1} className="mt-1 text-3xl font-bold text-ink outline-none sm:text-4xl">Meta Ads: After the 60</h2>
             <p className="mt-2 text-lg font-semibold text-ink">You know if ads are right for you yet, and how to start small without losing money.</p>
             {state.profile.tier !== 3 && <p className="mt-3 rounded-xl bg-surface/70 p-3 text-sm font-medium">Built for Tier 03. Hit your milestone first, then come back to this.</p>}
           </header>

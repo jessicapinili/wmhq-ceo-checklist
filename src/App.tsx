@@ -187,7 +187,7 @@ function Logo({ small }: { small?: boolean }) {
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl border-bold border-ink bg-blush" aria-label="WMHQ logo placeholder" role="img"><span className="pixel text-lg">WM</span></div>
-      <div className="leading-tight"><p className="pixel text-xl leading-none">WMHQ</p><p className={`font-bold ${small ? 'text-sm' : 'text-sm'}`}>CEO Checklist Challenge</p></div>
+      <div className="leading-tight"><p className="pixel text-xl leading-none">WMHQ</p><p className="text-sm font-bold">The Next 60</p></div>
     </div>
   )
 }

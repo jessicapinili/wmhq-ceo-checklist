@@ -1,4 +1,6 @@
-# The WMHQ CEO Checklist Challenge
+# The Next 60 (WMHQ)
+
+The step-by-step checklist to hit your next revenue milestone in 60 days. First sale. Repeat sales. Or +$10K.
 
 Member dashboard for the 60-day challenge. React + TypeScript + Tailwind (Vite), hosted on Netlify.
 

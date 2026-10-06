@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Log in | WMHQ CEO Checklist Challenge</title>
+<title>Log in | The Next 60 by WMHQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=VT323&display=swap" rel="stylesheet">
 <style>
@@ -14,7 +14,8 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 16px; -webkit-font-smoothing: antialiased; }
-.title { color: var(--ink); font-family: 'VT323', ui-monospace, monospace; font-size: clamp(34px, 7vw, 56px); line-height: .95; text-align: center; letter-spacing: .04em; margin-bottom: 24px; }
+.title { color: var(--ink); font-family: 'VT323', ui-monospace, monospace; font-size: clamp(34px, 7vw, 56px); line-height: .95; text-align: center; letter-spacing: .04em; margin-bottom: 8px; }
+.tagline { text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 420px; margin: 0 auto 24px; }
 .card { width: 100%; max-width: 480px; background: var(--surface); border: 2px solid var(--ink); border-radius: 22px; box-shadow: 0 6px 0 var(--soft); padding: 32px; }
 .eyebrow { font-family: 'VT323', monospace; font-size: 20px; color: var(--accent); letter-spacing: .04em; }
 h1 { font-size: 26px; font-weight: 800; margin: 2px 0 8px; }
@@ -36,14 +37,15 @@ footer a { color: var(--muted); }
 </style>
 </head>
 <body>
-<p class="title" aria-hidden="true">THE WMHQ CEO<br>CHECKLIST CHALLENGE</p>
+<p class="title" aria-hidden="true">THE NEXT 60</p>
+<p class="tagline">The step-by-step checklist to hit your next revenue milestone in 60 days.<br>First sale. Repeat sales. Or +$10K.</p>
 
 <main class="card">
   <div id="form-view">
     <p class="eyebrow">MEMBER LOGIN</p>
     <h1>Let's get you in.</h1>
     <p>Enter your details and we'll email you a login link. You'll stay logged in on this device for 90 days.</p>
-    <p class="important"><strong>Use the same email you used to sign up to the WMHQ CEO Checklist Challenge.</strong> Other emails won't receive a link.</p>
+    <p class="important"><strong>Use the same email you used to sign up to The Next 60.</strong> Other emails won't receive a link.</p>
     <div class="notice" id="expired" hidden>That login link has expired. Enter your details for a fresh one.</div>
     <form id="login-form" novalidate>
       <div class="row">
@@ -60,7 +62,7 @@ footer a { color: var(--muted); }
   <div id="sent-view" hidden>
     <p class="eyebrow">CHECK YOUR INBOX</p>
     <h1>Your link is on its way.</h1>
-    <p>If <strong id="sent-email"></strong> is registered for the CEO Checklist Challenge, a login link is on its way. It's valid for 15 minutes.</p>
+    <p>If <strong id="sent-email"></strong> is registered for The Next 60, a login link is on its way. It's valid for 15 minutes.</p>
     <p class="small">Nothing after a few minutes? Check your spam folder, and make sure it's the email you used to sign up to the challenge.
       <button type="button" class="link-btn" id="retry">Try a different email</button>
     </p>

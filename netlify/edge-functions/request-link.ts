@@ -15,7 +15,7 @@ function emailHtml(link: string, firstName: string): string {
     <tr><td align="center">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border:2px solid #3a1416;border-radius:18px;overflow:hidden;">
         <tr><td style="background:#3a1416;padding:24px 32px;">
-          <div style="font-size:17px;font-weight:800;color:#efe7dc;">The WMHQ CEO Checklist Challenge</div>
+          <div style="font-size:17px;font-weight:800;color:#efe7dc;">The Next 60 by WMHQ</div>
           <div style="font-size:10px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:#ecc5ce;margin-top:6px;">Your login link</div>
         </td></tr>
         <tr><td style="padding:32px;">
@@ -37,9 +37,9 @@ async function sendLoginEmail(to: string, link: string, firstName: string): Prom
     body: JSON.stringify({
       from: env("MAIL_FROM", DEFAULT_FROM),
       to: [to],
-      subject: "Your CEO Checklist login link",
+      subject: "Your login link for The Next 60",
       html: emailHtml(link, firstName),
-      text: `Your one-tap login link for the WMHQ CEO Checklist Challenge, valid for 15 minutes:\n\n${link}\n\nDidn't ask for this? You can ignore this email.`,
+      text: `Your one-tap login link for The Next 60 by WMHQ, valid for 15 minutes:\n\n${link}\n\nDidn't ask for this? You can ignore this email.`,
     }),
   });
   if (!res.ok) throw new Error(`Resend send failed (HTTP ${res.status}): ${await res.text()}`);

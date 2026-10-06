@@ -1,4 +1,5 @@
-// The list of emails allowed into the CEO Checklist, kept in Netlify Blobs (never in the repo).
+// The list of emails allowed into The Next 60, kept
+// (store name kept as "ceo-checklist-members" from the original name, so the member list carries over), in Netlify Blobs (never in the repo).
 // Managed from /admin/ by the emails in ADMIN_EMAILS. Separate from the WMHQ Tools list.
 import { getStore } from "@netlify/blobs";
 import { normalizeEmail } from "./auth.ts";
