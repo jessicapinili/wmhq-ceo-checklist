@@ -1,4 +1,4 @@
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, X } from 'lucide-react'
 import { useState } from 'react'
 import { useStore } from '../store'
 import { fmtMoney, progressOf } from '../utils'
@@ -17,7 +17,7 @@ const TEACH: { title: string; body: string }[] = [
 const SORT: { worry: string; right: string[]; why: string }[] = [
   { worry: '“I’ve tried things before and they didn’t work.”', right: ['Self-belief', 'Trust'], why: 'Either she doubts herself (“I can’t do it”) or she doubts you (“will this be different?”). Ask which one.' },
   { worry: '“It’s a lot of money.”', right: ['Value'], why: 'She can’t yet see that the result is worth more than the price. Show the cost of waiting.' },
-  { worry: '“Maybe after Christmas.”', right: ['Timing'], why: 'She isn’t sure now is right. Ask what would make it a good time, and what waiting costs.' },
+  { worry: '“Maybe after Christmas / my birthday / my holiday.”', right: ['Timing'], why: 'She isn’t sure now is right. Ask what would make it a good time, and what waiting costs.' },
   { worry: '“I’ve never heard of you.”', right: ['Trust'], why: 'She doesn’t know you yet. A result, a review or a quick call builds trust.' },
 ]
 
@@ -87,12 +87,17 @@ export default function MaybesWorkspace({ actionId }: { actionId: string }) {
                   <p className="font-semibold">{s.worry}</p>
                   <div role="radiogroup" aria-label={s.worry} className="mt-1.5 flex flex-wrap gap-2">
                     {ROOTS.map((r) => (
-                      <label key={r} className={`relative cursor-pointer rounded-pill border-bold px-4 py-1.5 text-sm font-semibold ${pick === r ? (s.right.includes(r) ? 'border-success bg-success-soft text-success' : 'border-ink bg-highlight') : 'border-line bg-surface hover:border-ink/50'}`}>
+                      <label key={r} className={`relative cursor-pointer rounded-pill border-bold px-4 py-1.5 text-sm font-semibold ${pick === r ? (s.right.includes(r) ? 'border-success bg-success-soft text-success' : 'border-danger bg-danger/10 text-danger') : 'border-line bg-surface hover:border-ink/50'}`}>
                         <input type="radio" className="sr-only" name={`${actionId}-sort${i}`} checked={pick === r} onChange={() => set(`sort${i + 1}`, r)} />{r}
                       </label>
                     ))}
                   </div>
-                  {pick && <p className="mt-1.5 text-sm" aria-live="polite"><span className="font-bold">{correct ? 'Yes. ' : `It’s ${s.right.join(' or ')}. `}</span>{s.why}</p>}
+                  {pick && (
+                    <p aria-live="polite" className={`mt-2 flex gap-2 rounded-xl p-3 text-sm ${correct ? 'bg-success-soft text-success' : 'bg-danger/10 text-danger'}`}>
+                      {correct ? <Check size={18} className="mt-0.5 shrink-0" /> : <X size={18} className="mt-0.5 shrink-0" />}
+                      <span><span className="font-bold">{correct ? 'Correct. ' : `Not quite. It’s ${s.right.join(' or ')}. `}</span><span className="text-ink">{s.why}</span></span>
+                    </p>
+                  )}
                 </li>
               )
             })}
