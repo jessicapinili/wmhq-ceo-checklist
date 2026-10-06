@@ -415,6 +415,126 @@ No generic ideas. Simple words.`,
   resources: [],
 }
 
+const ACTION_07: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'Anyone who shows interest has a clear path to buy, and nobody gets lost or forgotten.',
+  description: 'Give an interested buyer a clear way to say yes. Map every step from “I’m interested” to “I’ve paid”, and decide how you will follow up with people who go quiet.',
+  why: `Most sales are not lost because people say no. They are lost because nothing happens next. Someone asks a question and gets no reply. Someone clicks a link and gets stuck. Someone downloads a free guide and never hears from you again.
+
+Your sales path fixes that. It is a simple map of what happens after someone raises their hand, all the way to payment. There are two kinds:
+
+One-step: they see the offer, click, and buy or book. Best for lower prices, products, and people who already trust you.
+
+Two-step: they get your free way in first, then you show them the offer. Best for higher prices, services, and people who are new to you.
+
+Both need follow-up. Most people buy after the second or third message, not the first.`,
+  checklist: [
+    'Choose one-step or two-step',
+    'Write what people see or get when they show interest',
+    'Write how and when you show them the offer',
+    'Add your payment or booking link',
+    'Write what happens after they pay',
+    'Write your follow-up messages',
+    'Complete your tier requirement',
+    'Test the full path, then promote your way in',
+  ].map((label, i) => ({ id: `a07-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Use a one-step path unless your offer is over $1,000. Write the exact reply you will send when someone DMs or books, and 2 follow-up messages for anyone who goes quiet.',
+    2: 'Build a path for past buyers that skips the start. They already trust you, so go straight to the offer. Write the message you will send to past buyers, and 2 follow-ups.',
+    3: 'Find where your current path leaks. Write down the step where most people drop off: no reply, no booking, no payment, or no follow-up. Fix that one step first, and write 3 follow-up messages.',
+  },
+  help: {
+    inWmhq: { line: 'Open the Create A Landing Page That Converts resource in CEO Cash, inside the WMHQ Vault.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      promptBy: {
+        field: 'path',
+        chooseFirst: 'Choose one-step or two-step in your workspace first, and the matching prompt appears here.',
+        prompts: {
+          'One-step': `My buyer is: [buyer sentence]. My offer is: [one-liner]. People see my offer on [DM / sales page / booking page / shop].
+
+Write: my reply when someone is interested, the message after they pay, and 2 follow-ups for people who don't buy (2 days and 5 days later). Short, human, no pressure. Each ends with one clear next step.`,
+          'Two-step': `My buyer is: [buyer sentence]. My offer is: [one-liner]. My free way in is: [name from Action 06].
+
+Write: the message they get with the free thing, a check-in message 2 days later, a message that shows my offer, and a message that answers their biggest worry. Short, human, no pressure. Each ends with one clear next step.`,
+        },
+      },
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't2Message', label: 'The message you will send to past buyers', type: 'textarea', tiers: [2], help: 'Skip the start. They already trust you, so go straight to the offer.' },
+    { id: 't3Leak', label: 'Where do most people drop off?', type: 'select', tiers: [3], options: ['No reply', 'No booking', 'No payment', 'No follow-up'] },
+    { id: 't3Fix', label: 'How you will fix that one step', type: 'textarea', tiers: [3] },
+    // Choose path
+    { id: 'path', label: 'Which path are you using?', type: 'cards',
+      help: 'Lower price, product, or people who already trust you? Choose one-step. Higher price, service, or people who are new to you? Choose two-step. Tier 01, choose one-step unless your price is over $1,000.',
+      cards: [
+        { title: 'One-step', desc: 'They see the offer, click, and buy or book.', best: 'lower prices, products, and people who already trust you.' },
+        { title: 'Two-step', desc: 'They get your free way in first, then you show them the offer.', best: 'higher prices, services, and people who are new to you.' },
+      ] },
+    // One-step
+    { id: 'o1Where', label: 'Where do people see your offer?', type: 'select', options: ['DM', 'Sales page', 'Booking page', 'Shop or product page', 'In person'], help: 'This is where they decide to buy.',
+      showIf: { field: 'path', equals: ['One-step'] }, group: { title: 'Your one-step path' } },
+    { id: 'o1Reply', label: 'What do you say or show when someone is interested?', type: 'textarea', showIf: { field: 'path', equals: ['One-step'] },
+      help: 'Write your exact reply or what is on the page. Example: “It’s $89 and ships in 3 days. Here’s the link to order.”' },
+    { id: 'o1Pay', label: 'How do they pay or book?', type: 'url', placeholder: 'https://', showIf: { field: 'path', equals: ['One-step'] },
+      help: 'Paste your payment, checkout or booking link from Action 03.', copyFrom: { action: 'a03', field: 'payLink', label: 'Paste from Action 03' } },
+    { id: 'o1After', label: 'What happens after they pay?', type: 'textarea', showIf: { field: 'path', equals: ['One-step'] },
+      help: 'The confirmation, welcome message or next step they get. Nobody should pay and then hear nothing.' },
+    { id: 'o1Fu1', label: 'Follow-up 1 (send 2 days later)', type: 'textarea', showIf: { field: 'path', equals: ['One-step'] },
+      help: 'Be helpful, not pushy. Answer a worry, share a result, or ask a simple question.', group: { title: 'Your follow-up for people who don’t buy' } },
+    { id: 'o1Fu2', label: 'Follow-up 2 (send 5 days later)', type: 'textarea', showIf: { field: 'path', equals: ['One-step'] },
+      help: 'Be helpful, not pushy. Answer a worry, share a result, or ask a simple question.' },
+    { id: 'o1Fu3', label: 'Follow-up 3 (send 10 days later)', type: 'textarea', onlyTiers: [3], showIf: { field: 'path', equals: ['One-step'] },
+      help: 'Tier 03 only. Be helpful, not pushy.' },
+    // Two-step
+    { id: 't2sHow', label: 'How do people get your free way in?', type: 'text', showIf: { field: 'path', equals: ['Two-step'] },
+      help: 'DM keyword, form, booking link or click.', copyFrom: { action: 'a06', field: 'howWords', label: 'Paste from Action 06' }, group: { title: 'Your two-step path' } },
+    { id: 't2sWhere', label: 'Where do their details go?', type: 'select', options: ['Email list', 'DM inbox', 'Booking system', 'Spreadsheet', 'Other'], showIf: { field: 'path', equals: ['Two-step'] },
+      help: 'If you can’t find them later, you can’t sell to them.' },
+    { id: 't2sGet', label: 'What do they get straight away?', type: 'textarea', showIf: { field: 'path', equals: ['Two-step'] },
+      help: 'Write the message they receive with the free thing. Example: “Here’s your skin check. Start with step 1 tonight.”' },
+    { id: 't2sMove', label: 'How do you move them from the free thing to your offer?', type: 'textarea', placeholder: 'After they use it, I will show them my offer by…', showIf: { field: 'path', equals: ['Two-step'] },
+      help: 'Finish this sentence: “After they use it, I will show them my offer by…” Example: “…sending a DM 2 days later asking how it went, then sharing the full plan.”' },
+    { id: 't2sWhen', label: 'When do you show them the offer?', type: 'select', options: ['Same day', '2 days later', 'After a call', 'At the end of the free training', 'Other'], showIf: { field: 'path', equals: ['Two-step'] } },
+    { id: 't2sPay', label: 'How do they pay or book?', type: 'url', placeholder: 'https://', showIf: { field: 'path', equals: ['Two-step'] },
+      copyFrom: { action: 'a03', field: 'payLink', label: 'Paste from Action 03' } },
+    { id: 't2sM1', label: 'Message 1 (after they get the free thing): check in and help', type: 'textarea', showIf: { field: 'path', equals: ['Two-step'] },
+      help: 'Most people buy after the second or third message, not the first.', group: { title: 'Your follow-up messages' } },
+    { id: 't2sM2', label: 'Message 2: show the offer', type: 'textarea', showIf: { field: 'path', equals: ['Two-step'] } },
+    { id: 't2sM3', label: 'Message 3: answer their biggest worry from Action 02', type: 'textarea', showIf: { field: 'path', equals: ['Two-step'] } },
+    { id: 't2sM4', label: 'Message 4: last chance or a reason to buy now', type: 'textarea', onlyTiers: [3], showIf: { field: 'path', equals: ['Two-step'] }, help: 'Tier 03 only.' },
+    // Both paths
+    { id: 'map', label: 'Your path map', type: 'pathmap', showIf: { field: 'path', equals: ['One-step', 'Two-step'] },
+      group: { title: 'Your path map', intro: 'This builds itself from your answers above.' },
+      pathMap: { by: 'path', steps: {
+        'One-step': [
+          { label: 'Where they see it', field: 'o1Where' }, { label: 'Your reply', field: 'o1Reply' }, { label: 'Pay or book', field: 'o1Pay' },
+          { label: 'After they pay', field: 'o1After' }, { label: 'Follow-up', field: 'o1Fu1' },
+        ],
+        'Two-step': [
+          { label: 'Way in', field: 't2sHow' }, { label: 'Details saved in', field: 't2sWhere' }, { label: 'Free thing sent', field: 't2sGet' },
+          { label: 'Offer shown', field: 't2sWhen' }, { label: 'Pay or book', field: 't2sPay' }, { label: 'Follow-up', field: 't2sM1' },
+        ],
+      } } },
+    { id: 'testLinks', label: 'Did every link work?', type: 'yesno', ifNotYet: 'Fix the step where you got stuck, then test again.',
+      group: { title: 'Test the full path', intro: 'Go through it yourself, like a new client or customer would.' } },
+    { id: 'testFlow', label: 'Could you get from interest to payment without getting stuck?', type: 'yesno', ifNotYet: 'Fix the step where you got stuck, then test again.' },
+    { id: 'ready', label: 'Ready to promote', type: 'notice', notice: { when: ['testLinks', 'testFlow'], text: 'Your path works. You can now promote your way in.' } },
+  ],
+  proof: [
+    'Your path: one-step or two-step, and a screenshot of your path map',
+    'Your reply or the message they get when they show interest',
+    'Your follow-up messages',
+    'Your test result: every link works and you got to payment without getting stuck',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -439,7 +559,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

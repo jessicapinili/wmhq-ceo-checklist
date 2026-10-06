@@ -2,7 +2,7 @@ export type TierId = 1 | 2 | 3
 export type PhaseId = 'plan' | 'execute' | 'sell' | 'optimise'
 export type ActionStatus = 'not_started' | 'in_progress' | 'review' | 'complete'
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards'
+export type FieldType = 'text' | 'textarea' | 'number' | 'currency' | 'date' | 'url' | 'list' | 'tier' | 'select' | 'yesno' | 'cards' | 'pathmap' | 'notice'
 
 /** Profile keys a workspace field can be bound to, so editing in either place stays in sync. */
 export type ProfileKey = 'tier' | 'baseline' | 'milestone' | 'offer' | 'offerPrice'
@@ -28,6 +28,14 @@ export interface FieldDef {
   options?: string[]
   /** For a 'yesno' field: message shown when she picks "Not yet". */
   ifNotYet?: string
+  /** Only show when another answer in this action equals one of these values. */
+  showIf?: { field: string; equals: string[] }
+  /** Shared-workspace field shown only for these tiers (unlike `tiers`, it stays in the workspace). */
+  onlyTiers?: TierId[]
+  /** 'pathmap': steps that auto-build a path from other answers, keyed by the value of `by`. */
+  pathMap?: { by: string; steps: Record<string, { label: string; field: string }[]> }
+  /** 'notice': message shown only when every listed field is "Yes". */
+  notice?: { when: string[]; text: string }
   /** Small heading shown above this field to start a new group. */
   group?: { title: string; intro?: string }
 }
@@ -35,7 +43,7 @@ export interface FieldDef {
 /** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */
 export interface HelpDef {
   inWmhq: { line: string; linkLabel: string; url: string }
-  notInWmhq: { line: string; prompt?: string; bridge?: string; joinLabel?: string; joinUrl?: string }
+  notInWmhq: { line: string; prompt?: string; promptBy?: { field: string; prompts: Record<string, string>; chooseFirst: string }; bridge?: string; joinLabel?: string; joinUrl?: string }
 }
 
 export interface ActionDef {

@@ -72,7 +72,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           {/* 3. Why */}
           <Section title="Why this matters"><p className="whitespace-pre-line text-muted">{a.why}</p></Section>
 
-          {a.help && <HelpBox help={a.help} />}
+          {a.help && <HelpBox help={a.help} values={p.fields} />}
 
           {/* 4. Checklist */}
           <Section title="Checklist" right={<span className="pixel text-xl">{n}/{a.checklist.length}</span>}>
@@ -116,7 +116,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
             {a.calculator === 'reverse-engineer' && <div className="mb-6"><NumberCalculator actionId={a.id} /></div>}
             <div className="space-y-5">
-              {a.fields.filter((f) => !f.tiers).map((f) => (
+              {a.fields.filter((f) => !f.tiers && (!f.onlyTiers || (tier && f.onlyTiers.includes(tier))) && (!f.showIf || f.showIf.equals.includes(String(p.fields[f.showIf.field] ?? '')))).map((f) => (
                 <div key={f.id}>
                   {f.group && <div className="mb-4 mt-8 border-t border-line pt-6"><h4 className="text-lg font-bold">{f.group.title}</h4>{f.group.intro && <p className="text-muted">{f.group.intro}</p>}</div>}
                   {renderField(f)}
@@ -171,6 +171,34 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
     const write = (v: string | string[] | number | null) => {
       if (f.bind) setProfile({ [f.bind]: v } as Partial<Profile>)
       else setAction(a.id, (x) => ({ ...x, fields: { ...x.fields, [f.id]: v as string | string[] } }))
+    }
+    if (f.type === 'notice') {
+      const on = f.notice!.when.every((k) => p.fields[k] === 'Yes')
+      return on ? <p className="rounded-2xl bg-success-soft p-4 font-semibold text-success">{f.notice!.text}</p> : null
+    }
+    if (f.type === 'pathmap') {
+      const steps = f.pathMap!.steps[String(p.fields[f.pathMap!.by] ?? '')]
+      if (!steps) return <p className="text-sm text-muted">Choose your path above and your map builds here.</p>
+      return (
+        <div>
+          {!f.group && <p className="mb-2 text-sm font-semibold">{f.label}</p>}
+          <ol className="flex flex-wrap items-stretch gap-2">
+            {steps.map((st, i) => {
+              const v = p.fields[st.field]
+              const text = Array.isArray(v) ? v.filter(Boolean).length ? `${v.filter(Boolean).length} written` : '' : String(v ?? '').trim()
+              return (
+                <li key={st.label} className="flex items-center gap-2">
+                  <span className={`max-w-[15rem] rounded-xl border-bold px-3 py-2 text-sm ${text ? 'border-ink bg-surface' : 'border-dashed border-ink/30 bg-bg text-muted'}`}>
+                    <span className="label-caps block !text-[10px] !tracking-[0.12em]">{st.label}</span>
+                    <span className="line-clamp-2">{text || 'Not filled in yet'}</span>
+                  </span>
+                  {i < steps.length - 1 && <span aria-hidden className="text-lg">→</span>}
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      )
     }
     let input
     switch (f.type) {
@@ -248,10 +276,12 @@ function Section({ title, sub, right, children }: { title: string; sub?: string;
   )
 }
 
-function HelpBox({ help }: { help: HelpDef }) {
+function HelpBox({ help, values }: { help: HelpDef; values: Record<string, string | string[]> }) {
   const [copied, setCopied] = useState(false)
+  const pb = help.notInWmhq.promptBy
+  const prompt = pb ? pb.prompts[String(values[pb.field] ?? '')] : help.notInWmhq.prompt
   const copy = async () => {
-    try { await navigator.clipboard.writeText(help.notInWmhq.prompt ?? ''); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* clipboard blocked */ }
+    try { await navigator.clipboard.writeText(prompt ?? ''); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* clipboard blocked */ }
   }
   return (
     <Section title="Get help with this">
@@ -264,13 +294,14 @@ function HelpBox({ help }: { help: HelpDef }) {
         <div className="rounded-2xl border-bold border-ink/20 bg-surface p-4">
           <p className="label-caps">Not in WMHQ yet</p>
           <p className="mt-2">{help.notInWmhq.line}</p>
-          {help.notInWmhq.prompt && <button className="btn-primary mt-3 !px-4 !py-2" onClick={copy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy prompt</>}</button>}
+          {pb && !prompt && <p className="mt-3 text-sm font-medium">{pb.chooseFirst}</p>}
+          {prompt && <button className="btn-primary mt-3 !px-4 !py-2" onClick={copy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy prompt</>}</button>}
         </div>
       </div>
-      {help.notInWmhq.prompt && (
+      {prompt && (
         <details className="mt-3 rounded-2xl bg-bg p-4">
           <summary className="cursor-pointer text-sm font-semibold">See the prompt</summary>
-          <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-muted">{help.notInWmhq.prompt}</pre>
+          <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-muted">{prompt}</pre>
         </details>
       )}
       {(help.notInWmhq.bridge || help.notInWmhq.joinUrl) && (
