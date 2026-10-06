@@ -61,7 +61,7 @@ export default function Board({ onOpen, onRequestComplete, compact }: { onOpen: 
         ))}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-4">
+      <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-4">
         {PHASES.map((ph) => {
           const list = ACTIONS.filter((a) => a.phase === ph.id && matches(a))
           const active = list.filter((a) => progressOf(state, a.id).status !== 'complete')

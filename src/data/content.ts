@@ -75,6 +75,73 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
   resources: [],
 }
 
+// Links used in the "Get help with this" boxes.
+export const WMHQ_VAULT_URL = 'https://www.jessicapinili.com/login'
+export const JOIN_WMHQ_URL = '' // TODO: Join WMHQ sales page. The link is hidden until this is set.
+
+const ACTION_02: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know exactly who you are selling to, and you can describe them in their own words.',
+  description: 'Get clear on exactly who you want to sell to. Know what they want, what they are struggling with, what they are worried about, and what they have already tried to fix it.',
+  why: 'If you try to sell to everyone, your message lands with no one. When you know exactly who they are, what they want, and what scares them, your posts, DMs and offers start to sound like you are reading their mind. That is what makes someone buy. Every other action in this challenge is built on this one.',
+  checklist: [
+    'Pick one type of person to sell to',
+    'Write what they want most right now',
+    'Write what they are struggling with right now',
+    'Write what they are worried about',
+    'Write what they have already tried that did not work',
+    'Complete your tier requirement',
+    'Write your buyer sentence',
+    'Read it back and ask: would they say “that’s me”?',
+  ].map((label, i) => ({ id: `a02-c${i + 1}`, label })),
+  tierIntro: 'This is where the tiers really show. Each tier gets its buyer from a different source.',
+  tierRequirements: {
+    1: 'You have no buyers yet, so you need to talk to real people, not guess. Have 3 conversations by DM, call or voice note with women who fit your buyer. No audience yet? Message people you already know, or join a group where your client or customer hangs out. Ask the 4 questions below and write down her exact words.',
+    2: 'Your best future buyer has already bought from you. List every past buyer. Choose the 3 you would most love to sell to again. Message 2 of them and ask what made them buy and what they need help with now.',
+    3: 'Your buyer is already in your numbers. List your top 5 clients by cash collected. Write down what they have in common: where they were stuck, what they wanted, and why they said yes fast. That pattern is your buyer.',
+  },
+  help: {
+    inWmhq: { line: 'Open the Buyer Avatar Worksheet in CEO Influence. It walks you through this step by step.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your product or service] to [who you think buys it]. Interview me to find my exact buyer. Ask one question at a time. If my answer is vague or could apply to anyone, push back and make me be more specific.
+
+Find out:
+1. Who exactly they are
+2. What they want most right now
+3. What they struggle with right now
+4. What they are worried about
+5. What they have already tried that did not work
+
+No generic answers. Then write: I help [who] get [what they want] without [what they are worried about], even if they have already tried [what did not work]. Use simple words.`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces (shown inside "Your tier requirement")
+    { id: 't1Conversations', label: 'Your 3 conversations', type: 'list', tiers: [1], placeholder: 'Who you spoke to, and what she said word for word', help: 'Add one line per conversation.' },
+    { id: 't2PastBuyers', label: 'Every past buyer', type: 'list', tiers: [2], placeholder: 'Name' },
+    { id: 't2Top3', label: 'The 3 you would most love to sell to again', type: 'textarea', tiers: [2] },
+    { id: 't2Answers', label: 'What 2 of them told you', type: 'textarea', tiers: [2], help: 'What made them buy, and what they need help with now.' },
+    { id: 't3TopClients', label: 'Your top 5 clients by cash collected', type: 'list', tiers: [3], placeholder: 'Client and amount, e.g. Sarah, $4,500' },
+    { id: 't3Pattern', label: 'What they have in common', type: 'textarea', tiers: [3], help: 'Where they were stuck, what they wanted, and why they said yes fast.' },
+    // Shared buyer questions
+    { id: 'who', label: 'Who is the one type of client or customer you are selling to?', type: 'textarea', help: 'Be specific. “Dog owners” is too wide. “Owners of anxious rescue dogs” is clear. “Busy people” is too wide. “Nurses who work night shift” is clear.' },
+    { id: 'want', label: 'What do they want most right now?', type: 'textarea', help: 'Write it how they would say it, not how you would.' },
+    { id: 'struggle', label: 'What are they struggling with right now?', type: 'textarea', help: 'What goes wrong for them in a normal week?' },
+    { id: 'worried', label: 'What are they worried about?', type: 'textarea', help: 'This is the fear that stops them from buying, like wasting money, it not working for them, or looking silly.' },
+    { id: 'tried', label: 'What have they already tried that did not work?', type: 'textarea', help: 'Cheaper versions, free videos, doing it alone, a competitor.' },
+    { id: 'quote', label: 'What did they say, word for word?', type: 'textarea', help: 'Paste one real thing a client or customer said, from a DM, review, email or call.' },
+    { id: 'buyerSentence', label: 'Your buyer sentence', type: 'textarea', placeholder: 'I help [who] get [what they want] without [what they are worried about], even if they have already tried [what did not work].',
+      help: 'Fill in: I help [who] get [what they want] without [what they are worried about], even if they have already tried [what did not work].',
+      compose: 'I help {who} get {want} without {worried}, even if they have already tried {tried}.' },
+  ],
+  proof: [],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -99,7 +166,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

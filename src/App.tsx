@@ -163,7 +163,7 @@ export default function App() {
       </main>
 
       {/* Right progress panel (wide screens) */}
-      <aside className="hidden w-72 shrink-0 border-l-bold border-ink bg-cream 2xl:block" aria-label="Progress summary">
+      <aside className="hidden w-72 shrink-0 border-l-bold border-ink bg-cream min-[1800px]:block" aria-label="Progress summary">
         <div className="sticky top-0 p-5"><ProgressPanel onOpen={setOpenId} /></div>
       </aside>
 

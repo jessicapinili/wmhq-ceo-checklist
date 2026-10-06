@@ -14,6 +14,16 @@ export interface FieldDef {
   help?: string
   placeholder?: string
   bind?: ProfileKey
+  /** Only shown (inside the tier requirement) for these tiers. */
+  tiers?: TierId[]
+  /** Template like "I help {who} get {want}" — adds a button that fills this field from other answers. */
+  compose?: string
+}
+
+/** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */
+export interface HelpDef {
+  inWmhq: { line: string; linkLabel: string; url: string }
+  notInWmhq: { line: string; prompt: string; bridge: string; joinLabel: string; joinUrl: string }
 }
 
 export interface ActionDef {
@@ -23,7 +33,10 @@ export interface ActionDef {
   title: string
   summary: string
   outcome: string
+  description?: string
   why: string
+  tierIntro?: string
+  help?: HelpDef
   dueDay: number // day of challenge (1–60)
   checklist: { id: string; label: string }[]
   tierRequirements: Record<TierId, string>

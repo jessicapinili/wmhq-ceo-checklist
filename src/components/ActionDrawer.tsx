@@ -1,8 +1,8 @@
-import { ChevronLeft, ChevronRight, ExternalLink, Info, X } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, Info, Sparkles, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { ACTIONS, PHASES, TIERS } from '../data/content'
 import { useStore } from '../store'
-import type { FieldDef, Profile, TierId } from '../types'
+import type { FieldDef, HelpDef, Profile, TierId } from '../types'
 import { checkedCount, dueDate, fmtLong, progressOf, todayISO } from '../utils'
 import { StatusSelect } from './Board'
 import { Checkbox, Field, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
@@ -46,7 +46,8 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           <header>
             <p className="pixel text-xl text-accent">PHASE {phase.number} · ACTION {String(a.number).padStart(2, '0')}</p>
             <h2 id="drawer-title" tabIndex={-1} className="text-3xl font-bold outline-none sm:text-4xl">{a.title}</h2>
-            <p className="mt-2 text-lg">{a.outcome}</p>
+            <p className="mt-2 text-lg font-semibold">{a.outcome}</p>
+            {a.description && <p className="mt-2 text-muted">{a.description}</p>}
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
               <span className="label-caps">Due {fmtLong(dueDate(state, a))}</span>
               <label htmlFor="drawer-status" className="sr-only">Status</label>
@@ -59,6 +60,8 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
 
           {/* 3. Why */}
           <Section title="Why this matters"><p className="text-muted">{a.why}</p></Section>
+
+          {a.help && <HelpBox help={a.help} />}
 
           {/* 4. Checklist */}
           <Section title="Checklist" right={<span className="pixel text-xl">{n}/{a.checklist.length}</span>}>
@@ -78,8 +81,14 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
 
           {/* 5. Tier requirement */}
           <Section title={tier ? `Your ${TIERS[tier].short} requirement` : 'Tier requirement'}>
+            {a.tierIntro && <p className="mb-3 text-muted">{a.tierIntro}</p>}
             {tier ? <p className="rounded-2xl border-bold border-ink bg-blush/50 p-4 text-lg font-semibold">{a.tierRequirements[tier]}</p>
               : <p className="text-muted">Choose a tier to see your requirement.</p>}
+            {tier && a.fields.some((f) => f.tiers?.includes(tier)) && (
+              <div className="mt-4 space-y-5 rounded-2xl bg-cream/60 p-4">
+                {a.fields.filter((f) => f.tiers?.includes(tier)).map((f) => <div key={f.id}>{renderField(f)}</div>)}
+              </div>
+            )}
             <button className="mt-3 text-sm font-semibold underline underline-offset-4" aria-expanded={otherTiers} onClick={() => setOtherTiers(!otherTiers)}>
               {otherTiers ? 'Hide other tiers' : 'View other tiers'}
             </button>
@@ -95,13 +104,13 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           {/* 6. Workspace */}
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
             <div className="space-y-5">
-              {a.fields.map((f) => <div key={f.id}>{renderField(f)}</div>)}
+              {a.fields.filter((f) => !f.tiers).map((f) => <div key={f.id}>{renderField(f)}</div>)}
             </div>
           </Section>
 
           {/* 7. Proof */}
           <Section title="Proof to post">
-            <ul className="mb-4 list-disc space-y-1 pl-5 text-muted">{a.proof.map((x) => <li key={x}>{x}</li>)}</ul>
+            {a.proof.length > 0 && <ul className="mb-4 list-disc space-y-1 pl-5 text-muted">{a.proof.map((x) => <li key={x}>{x}</li>)}</ul>}
             <div className="space-y-4 rounded-2xl bg-cream/60 p-4">
               <Field label="Community post link" htmlFor="pf-link"><TextInput id="pf-link" type="url" placeholder="https://" value={p.proof.link} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, link: v } }))} /></Field>
               <Field label="Written proof note" htmlFor="pf-note"><TextArea id="pf-note" value={p.proof.note} onChange={(v) => setAction(a.id, (x) => ({ ...x, proof: { ...x.proof, note: v } }))} /></Field>
@@ -155,6 +164,12 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
     return (
       <Field label={f.label} help={f.bind ? `${f.help ? f.help + ' ' : ''}Also updates your challenge setup.` : f.help} htmlFor={f.type === 'tier' ? undefined : fid}>
         {input}
+        {f.compose && (
+          <button type="button" className="btn-ghost !px-3 !py-1.5 text-xs" onClick={() => write(f.compose!.replace(/\{(\w+)\}/g, (_, k: string) => {
+            const v = p.fields[k]
+            return typeof v === 'string' && v.trim() ? v.trim().replace(/[.\s]+$/, '') : `[${k}]`
+          }))}><Sparkles size={14} /> Build it from my answers</button>
+        )}
         {f.type === 'url' && typeof raw === 'string' && /^https?:\/\//.test(raw) && <a href={raw} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm underline">Open link <ExternalLink size={13} /></a>}
       </Field>
     )
@@ -169,5 +184,35 @@ function Section({ title, sub, right, children }: { title: string; sub?: string;
       </div>
       {children}
     </section>
+  )
+}
+
+function HelpBox({ help }: { help: HelpDef }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(help.notInWmhq.prompt); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* clipboard blocked */ }
+  }
+  return (
+    <Section title="Get help with this">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border-bold border-ink bg-blush/40 p-4">
+          <p className="label-caps !text-ink">In WMHQ</p>
+          <p className="mt-2">{help.inWmhq.line}</p>
+          <a href={help.inWmhq.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1 font-bold underline underline-offset-4">{help.inWmhq.linkLabel} →</a>
+        </div>
+        <div className="rounded-2xl border-bold border-ink/20 bg-surface p-4">
+          <p className="label-caps">Not in WMHQ yet</p>
+          <p className="mt-2">{help.notInWmhq.line}</p>
+          <button className="btn-primary mt-3 !px-4 !py-2" onClick={copy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy prompt</>}</button>
+        </div>
+      </div>
+      <details className="mt-3 rounded-2xl bg-bg p-4">
+        <summary className="cursor-pointer text-sm font-semibold">See the prompt</summary>
+        <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-muted">{help.notInWmhq.prompt}</pre>
+      </details>
+      <p className="mt-3 text-sm text-muted">{help.notInWmhq.bridge}{' '}
+        {help.notInWmhq.joinUrl && <a href={help.notInWmhq.joinUrl} target="_blank" rel="noreferrer" className="font-bold text-ink underline underline-offset-4">{help.notInWmhq.joinLabel} →</a>}
+      </p>
+    </Section>
   )
 }
