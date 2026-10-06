@@ -10,7 +10,20 @@ function toLogin(req: Request, clearCookie = false): Response {
   return new Response(null, { status: 302, headers });
 }
 
+// Old addresses forward to the current one, keeping the path (e.g. /admin).
+const PRIMARY_HOST = "thenext60checklist.womanmasteryhqportal.com";
+const OLD_HOSTS = ["ceochecklist.womanmasteryhqportal.com"];
+
 export default async (req: Request, context: { next: () => Promise<Response> }) => {
+  const url = new URL(req.url);
+  if (OLD_HOSTS.includes(url.hostname)) {
+    url.hostname = PRIMARY_HOST;
+    return new Response(null, { status: 301, headers: { Location: url.toString() } });
+  }
+
+  // Login pages are open (but still get the old-address forward above).
+  if (/^\/(admin\/)?login(\/|$)/.test(url.pathname)) return context.next();
+
   const session = await getSession(req);
   if (!session) return toLogin(req, true);
 
@@ -38,5 +51,5 @@ export default async (req: Request, context: { next: () => Promise<Response> }) 
 
 export const config = {
   path: "/*",
-  excludedPath: ["/login", "/login/", "/login/*", "/admin/login", "/admin/login/", "/admin/login/*", "/api/*", "/favicon.png"],
+  excludedPath: ["/api/*", "/favicon.png"],
 };
