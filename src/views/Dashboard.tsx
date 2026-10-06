@@ -1,4 +1,5 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
 import { ACTIONS } from '../data/content'
 import { useStore } from '../store'
 import Board from '../components/Board'
@@ -68,6 +69,7 @@ export default function Dashboard({ onOpen, onRequestComplete }: { onOpen: (id: 
         )}
         {!next && <p className="border-t-bold border-ink bg-success-soft px-8 py-4 font-semibold text-success">All 16 actions are complete. Time for your CEO review.</p>}
       </section>
+      <ReadFirst />
       <Board onOpen={onOpen} onRequestComplete={onRequestComplete} compact />
     </div>
   )
@@ -79,5 +81,31 @@ function Stat({ big, small }: { big: string; small: string }) {
       <p className="pixel text-4xl leading-none">{big}</p>
       <p className="mt-1 text-sm text-muted">{small}</p>
     </div>
+  )
+}
+
+/** "Read this before you start" accordion. Open until she closes it once; remembered per browser. */
+function ReadFirst() {
+  const KEY = 'wmhq-readfirst-closed'
+  const [open, setOpen] = useState(() => { try { return localStorage.getItem(KEY) !== '1' } catch { return true } })
+  const toggle = () => setOpen((o) => { try { localStorage.setItem(KEY, o ? '1' : '0') } catch { /* ignore */ } return !o })
+  return (
+    <section className="rounded-card border-bold border-ink bg-surface">
+      <h2>
+        <button type="button" onClick={toggle} aria-expanded={open} aria-controls="read-first"
+          className="flex w-full items-center justify-between gap-3 px-6 py-4 text-left text-lg font-bold sm:px-8">
+          Read this before you start
+          <ChevronDown size={20} className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        </button>
+      </h2>
+      {open && (
+        <div id="read-first" className="max-w-3xl space-y-3 px-6 pb-6 text-muted sm:px-8">
+          <p>If you follow this challenge, you will build a real process to hit your next revenue milestone. Every action here is a proven practice. Nothing is filler.</p>
+          <p className="font-semibold text-ink">But it only works if you do the work.</p>
+          <p>Opening the checklist every few days and hoping for the best won’t get you there. Neither will rushing through an action just to tick it off, or skipping the parts that feel uncomfortable. The uncomfortable parts are usually the ones that make the sale.</p>
+          <p>This challenge doesn’t make you money. What you do with it does. Show up, do each action properly, and sell the whole way through.</p>
+        </div>
+      )}
+    </section>
   )
 }
