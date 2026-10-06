@@ -22,10 +22,10 @@ export const TIERS: Record<TierId, { name: string; short: string; description: s
 }
 
 export const PHASES: { id: PhaseId; number: string; name: string; days: [number, number]; intro: string }[] = [
-  { id: 'plan', number: '01', name: 'Plan', days: [1, 14], intro: 'Choose your milestone, your buyer and your offer, then turn the number into weekly activity.' },
-  { id: 'execute', number: '02', name: 'Execute', days: [15, 30], intro: 'Set up the minimum, create one way in and build a clear path to yes.' },
+  { id: 'plan', number: '01', name: 'Plan', days: [1, 14], intro: 'Choose your milestone, lock in your buyer, build one clear offer, and turn your goal into a weekly number.' },
+  { id: 'execute', number: '02', name: 'Execute', days: [15, 30], intro: 'Set up the basics, create one way in, build a clear path to buy, and switch on your weekly sales engine.' },
   { id: 'sell', number: '03', name: 'Sell', days: [31, 45], intro: 'Make the offer, see what stops you, have the conversations, and close the loop.' },
-  { id: 'optimise', number: '04', name: 'Optimise', days: [46, 60], intro: 'Measure, fix the bottleneck, double down and finish strongly.' },
+  { id: 'optimise', number: '04', name: 'Optimise', days: [46, 60], intro: 'Measure what happened, fix the bottleneck, double down on what works, and review like a CEO.' },
 ]
 
 type Seed = [number, PhaseId, string, string, number]
