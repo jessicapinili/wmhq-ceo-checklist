@@ -184,21 +184,11 @@ export default function CeoReviewWorkspace({ actionId }: { actionId: string }) {
             <a href={WMHQ_PORTAL_URL} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex font-bold underline decoration-2 underline-offset-4">Open your Personal Portal →</a>
           </div>
         </div>
-        {support.includes('1:1 support') && (
-          <div className="rounded-2xl bg-ink p-5 text-surface">
-            <p className="text-lg font-semibold">Want more support? Upgrade to work with JP more closely.</p>
-            {UPGRADE_URL
-              ? <a href={UPGRADE_URL} target="_blank" rel="noopener noreferrer" className="btn mt-3 bg-surface text-ink">See upgrade options →</a>
-              : <p className="mt-2 text-sm opacity-80">Reply to any WMHQ email or message JP to ask about upgrade options.</p>}
-          </div>
-        )}
       </section>
     </div>
   )
 }
 
-// TODO: Jess to supply the upgrade page link. Until then the 1:1 card shows a contact line instead of a button.
-const UPGRADE_URL = ''
 
 function CeoSummary({ lines }: { lines: string[] }) {
   const [copied, setCopied] = useState(false)
