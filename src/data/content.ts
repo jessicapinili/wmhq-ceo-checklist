@@ -842,6 +842,70 @@ Then offer to run it again with harder objections. Be direct. Don't soften the f
   resources: [],
 }
 
+const ACTION_12: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'Every “not yet” has been followed up, and every buyer has a reason to buy again or send you someone new.',
+  description: 'Recover undecided sales and create your next one. Follow up with everyone who said “not yet,” then turn your buyers into reviews, referrals and repeat sales.',
+  why: `Silence is not a no. Most people who don't reply are busy, distracted or still unsure. Many sales happen on the second or third message, not the first. If you stop after one message, you hand those sales away.
+
+Your buyers are the other half of the money. Someone who just bought from you already trusts you. They are the easiest person to sell to again, the best person to ask for a review, and the most likely to send you someone new. Their review also helps your next buyer trust you.`,
+  checklist: [
+    'Do your sales check',
+    'Choose your business type',
+    'List everyone who said “not yet” or went quiet',
+    'Send your 3 follow-up messages',
+    'List everyone who bought',
+    'Ask each buyer for a review or testimonial',
+    'Offer each buyer their next purchase or ask for a referral',
+    'Complete your tier requirement',
+  ].map((label, i) => ({ id: `a12-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'No sale yet? Follow up with every person you’ve spoken to, using all 3 messages. Made your first sale? Get a review or testimonial from that buyer within 7 days. It’s the proof that makes sale number two easier.',
+    2: 'For every buyer in this challenge, set up their next purchase before they finish, like a rebooking, a reorder reminder or the next level. A repeat sale planned now is a predictable sale later.',
+    3: 'Create one next-step offer worth more than what they bought, such as a bigger package, a bundle, ongoing support or a VIP version. Offer it to every buyer from this challenge, and ask each one for a referral.',
+  },
+  help: {
+    // TODO: Jess to confirm the exact training/tool and module name.
+    inWmhq: { line: 'Open the follow-up training in the WMHQ Vault. It shows you how to follow up without feeling pushy and turn buyers into repeat clients or customers.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your offer] at [price]. It is a [product / service / info product]. My buyer is: [buyer sentence from Action 02]. Their biggest worry is: [worry from Action 11]. I talk to buyers through [DM / email / text / in person].
+
+Before you write anything, ask me these one at a time:
+1. How many people said "not yet" or went quiet, and what did most of them say?
+2. How many people bought, and what result or feedback have they shared?
+3. What else do I sell, or could I sell, after this offer?
+
+Then write:
+
+Recover
+1. A check-in message, sent 2 to 3 days after they went quiet
+2. A proof message, sent 3 to 5 days later, using a real result I gave you. If I have none, answer their biggest worry instead.
+3. A close-the-loop message, sent 5 to 7 days later, that politely ends the follow-up and leaves the door open
+
+Repeat
+4. A message asking a happy buyer for a review or testimonial, with 3 simple questions: what was going on before, what changed after, and who they would recommend it to
+5. Three ideas for what a buyer could purchase next, ranked by which is easiest to sell, and a message offering the best one
+6. A referral message that gives the buyer an easy reason to share
+
+Rules: Make everything fit how a [product / service / info] business sells. Never make up results, reviews or deadlines. Short and human, like a text from a real person. No pressure, no hype, no "no worries if not." Each message ends with one clear next step.`,
+      bridge: 'AI can help you get the words down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'recover',
+  fields: [
+    { id: 't1AllFollowed', label: 'No sale yet: have you followed up with everyone you’ve spoken to, using all 3 messages?', type: 'yesno', tiers: [1], ifNotYet: 'Go through your “not yet” list and send the next message to each person.' },
+    { id: 't1ReviewBy', label: 'Made your first sale: when will you have their review or testimonial?', type: 'date', tiers: [1], help: 'Within 7 days of the sale.' },
+    { id: 't2NextSet', label: 'Has every buyer in this challenge got their next purchase set up?', type: 'yesno', tiers: [2], help: 'Like a rebooking, a reorder reminder or the next level.', ifNotYet: 'Set it up before they finish. A repeat sale planned now is a predictable sale later.' },
+    { id: 't3Offer', label: 'Your next-step offer', type: 'textarea', tiers: [3], help: 'Worth more than what they bought: a bigger package, a bundle, ongoing support or a VIP version.' },
+    { id: 't3Price', label: 'Its price', type: 'currency', tiers: [3] },
+  ],
+  proof: ['Post one review or testimonial you received. Still working on your first sale? Post how many people you followed up with, and how many replied.'],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -866,7 +930,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : number === 12 ? ACTION_12 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
