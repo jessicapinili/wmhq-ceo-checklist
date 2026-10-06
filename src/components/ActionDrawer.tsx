@@ -94,7 +94,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           {/* 5. Tier requirement */}
           <Section title={tier ? `Your ${TIERS[tier].short} requirement` : 'Tier requirement'}>
             {a.tierIntro && <p className="mb-3 text-muted">{a.tierIntro}</p>}
-            {tier ? <p className="rounded-2xl border-bold border-ink bg-blush/50 p-4 text-lg font-semibold">{a.tierRequirements[tier]}</p>
+            {tier ? <p className="rounded-2xl border-bold border-ink bg-blush/50 p-4 text-lg font-semibold">{a.tierRequirements[tier].replace('{end}', fmtLong(state.profile.endDate))}</p>
               : <p className="text-muted">Choose a tier to see your requirement.</p>}
             {tier && a.fields.some((f) => f.tiers?.includes(tier)) && (
               <div className="mt-4 space-y-5 rounded-2xl bg-cream/60 p-4">
@@ -107,7 +107,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
             {otherTiers && (
               <ul className="mt-3 space-y-2">
                 {([1, 2, 3] as TierId[]).filter((t) => t !== tier).map((t) => (
-                  <li key={t} className="rounded-xl bg-bg p-3 text-sm"><span className="font-bold">{TIERS[t].short}: {TIERS[t].name}.</span> {a.tierRequirements[t]}</li>
+                  <li key={t} className="rounded-xl bg-bg p-3 text-sm"><span className="font-bold">{TIERS[t].short}: {TIERS[t].name}.</span> {a.tierRequirements[t].replace('{end}', fmtLong(state.profile.endDate))}</li>
                 ))}
               </ul>
             )}

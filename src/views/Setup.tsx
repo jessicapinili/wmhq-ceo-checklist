@@ -95,7 +95,7 @@ export default function Setup({ onDone }: { onDone: () => void }) {
         </>}
         {step === 6 && <>
           <H>When does your challenge start?</H>
-          <Field label="Challenge start date" htmlFor="s-start" help="The group challenge starts Monday 19 October 2026."><TextInput id="s-start" type="date" value={p.startDate} onChange={(v) => set({ startDate: v })} /></Field>
+          <Field label="Challenge start date" htmlFor="s-start" help="Pick the day you will start. Every target date in your checklist is set from this, and you can change it later in Settings."><TextInput id="s-start" type="date" value={p.startDate} onChange={(v) => set({ startDate: v })} /></Field>
         </>}
         {step === 7 && <>
           <H>Confirm your end date.</H>

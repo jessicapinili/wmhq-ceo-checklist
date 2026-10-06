@@ -1,8 +1,19 @@
 import type { ActionDef, PhaseId, TierId } from '../types'
 
-export const DEFAULT_START = '2026-10-19'
-export const DEFAULT_END = '2026-12-17'
+// The group start date. Once it has passed (e.g. sold later as a self-paced asset),
+// new members get next Monday suggested instead. Everyone can pick their own date in setup.
+export const GROUP_START = '2026-10-19'
 export const CHALLENGE_DAYS = 60
+export function suggestedStart(today = new Date()): string {
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  if (iso(today) <= GROUP_START) return GROUP_START
+  const d = new Date(today); d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7))
+  return iso(d)
+}
+export function endFor(start: string): string {
+  const [y, m, d] = start.split('-').map(Number); const e = new Date(y, m - 1, d + CHALLENGE_DAYS - 1)
+  return `${e.getFullYear()}-${String(e.getMonth() + 1).padStart(2, '0')}-${String(e.getDate()).padStart(2, '0')}`
+}
 
 export const TIERS: Record<TierId, { name: string; short: string; description: string; milestone: string }> = {
   1: { name: 'First Sale', short: 'Tier 01', description: 'Make one new paid sale during the challenge.', milestone: 'Make one new paid sale' },
@@ -54,9 +65,10 @@ const ACTION_01: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary'
     'Confirm that you are ready to begin',
   ].map((label, i) => ({ id: `a01-c${i + 1}`, label })),
   tierRequirements: {
-    1: 'I will make my first paid sale by 17 December 2026.',
-    2: 'I will make three paid sales of the same offer by 17 December 2026.',
-    3: 'I will collect $10,000 more cash than my previous 60-day baseline by 17 December 2026.',
+    // {end} is replaced with the member's own end date.
+    1: 'I will make my first paid sale by {end}.',
+    2: 'I will make three paid sales of the same offer by {end}.',
+    3: 'I will collect $10,000 more cash than my previous 60-day baseline by {end}.',
   },
   fields: [
     { id: 'tier', label: 'Selected tier', type: 'tier', bind: 'tier' },

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
-import { DEFAULT_END, DEFAULT_START } from './data/content'
+import { endFor, suggestedStart } from './data/content'
 import type { ActionProgress, AppState, Profile } from './types'
 import type { Member } from './session'
 import { emptyProgress } from './utils'
@@ -10,7 +10,7 @@ export const storageKey = (email: string) => `wmhq-ceo-checklist:v1:${email}`
 export const defaultState = (m?: Member): AppState => ({
   version: 1,
   setupComplete: false,
-  profile: { firstName: m?.firstName ?? '', lastName: m?.lastName ?? '', email: m?.email ?? '', tier: null, baseline: null, milestone: '', offer: '', offerPrice: null, startDate: DEFAULT_START, endDate: DEFAULT_END },
+  profile: { firstName: m?.firstName ?? '', lastName: m?.lastName ?? '', email: m?.email ?? '', tier: null, baseline: null, milestone: '', offer: '', offerPrice: null, startDate: suggestedStart(), endDate: endFor(suggestedStart()) },
   actions: {},
   currentPhase: 'plan',
   scorecard: [],

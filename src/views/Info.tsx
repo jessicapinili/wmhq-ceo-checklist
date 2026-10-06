@@ -1,14 +1,17 @@
 import { PHASES, TIERS } from '../data/content'
 import type { TierId } from '../types'
 import { PageTitle } from '../components/ui'
+import { useStore } from '../store'
+import { fmtDate } from '../utils'
 
 export default function Info() {
+  const { profile } = useStore().state
   return (
     <div className="max-w-3xl">
       <PageTitle eyebrow="HOW IT WORKS" title="Challenge Information" />
       <div className="space-y-5">
         <Block title="Challenge dates">
-          <p>The challenge runs for 60 days, from <strong>Monday 19 October 2026</strong> (9:30am AEST) to <strong>Thursday 17 December 2026</strong>.</p>
+          <p>Your challenge runs for 60 days, from <strong>{fmtDate(profile.startDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</strong> to <strong>{fmtDate(profile.endDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</strong>. You can change your dates in Settings.</p>
           <p className="mt-2 text-muted">Every action has a rough target date, counted from your start date, to keep you on track. It’s a guide, not a hard deadline. You can start selling at any point.</p>
         </Block>
         <Block title="The three tiers">
