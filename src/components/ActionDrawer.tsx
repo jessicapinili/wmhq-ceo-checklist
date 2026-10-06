@@ -7,6 +7,7 @@ import { checkedCount, daysBetween, dueDate, fmtDate, fmtLong, fmtMoney, progres
 import { StatusSelect } from './Board'
 import NumberCalculator, { computeNumbers } from './NumberCalculator'
 import PatternQuiz from './PatternQuiz'
+import MaybesWorkspace from './MaybesWorkspace'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
@@ -117,6 +118,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
             {a.calculator === 'reverse-engineer' && <div className="mb-6"><NumberCalculator actionId={a.id} /></div>}
             {a.calculator === 'pattern-quiz' && <div className="mb-6"><PatternQuiz actionId={a.id} /></div>}
+            {a.calculator === 'maybes' && <div className="mb-6"><MaybesWorkspace actionId={a.id} /></div>}
             <div className="space-y-5">
               {a.fields.filter((f) => !f.tiers && (!f.onlyTiers || (tier && f.onlyTiers.includes(tier))) && (!f.showIf || f.showIf.equals.includes(String(p.fields[f.showIf.field] ?? '')))).map((f) => (
                 <div key={f.id}>

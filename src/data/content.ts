@@ -787,6 +787,61 @@ You can't fix a pattern you can't see. This quiz uses what you actually did in y
   resources: [],
 }
 
+const ACTION_11: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You can answer any worry without dropping your price, and show buyers what waiting is costing them.',
+  description: 'Move each interested buyer towards a clear decision. Learn to answer common worries, show the cost of waiting, and make sure every conversation ends in a yes, a no, or a follow-up date.',
+  why: `When someone says "it's too expensive" or "I'll think about it," it usually isn't a no. It's a worry they need help with. Most people hear a worry and back off, drop their price, or say "no worries." That is where most sales are lost.
+
+There are two skills that fix this. The first is answering the worry calmly, without discounting or over-explaining. The second is showing the cost of waiting. Every problem costs your buyer something each month they don't fix it, whether that's money, time, stress or missed chances. When they can see that cost clearly, waiting stops feeling like the safe choice.
+
+This is real urgency. It doesn't need a fake deadline, because it's already true.`,
+  checklist: [
+    'Read your pattern reminder from Action 10',
+    'Learn why people say “not yet”',
+    'Build your cost of waiting',
+    'Write your answers to the 6 common worries',
+    'Choose the worry you will answer before they ask',
+    'Complete your tier requirement',
+    'Practise one conversation (AI or a friend)',
+  ].map((label, i) => ({ id: `a11-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Use what you learn here in at least 5 sales conversations. When you hear a worry, use your answer from the workspace, not a discount.',
+    2: 'Use your cost of waiting with at least 3 past buyers. Show them what slips back if they stop now, and ask them directly if they want to go again.',
+    3: 'Use your cost of waiting in every sales conversation, at full price, with no discounts. Take the worry you hear most and answer it in your content and sales page this week, so buyers have their answer before they ask.',
+  },
+  help: {
+    inWmhq: { line: 'Watch all three trainings in Money Mindset inside CEO Cash. They show you why you back off when buyers push back, and how to stay steady on your price.', linkLabel: 'Open the WMHQ Vault', url: WMHQ_VAULT_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use, and practise before your real conversations. Fill in the brackets first.',
+      prompt: `I sell [your offer] at [price]. My buyer is: [buyer sentence from Action 02]. Their biggest worry is: [worry from Action 02]. My sales pattern is: [pattern from Action 10].
+
+Run a realistic sales conversation with me. You are my buyer. Start interested, then push back with 2 different objections, one at a time. Choose from: it's too expensive, I need to think about it, now isn't a good time, I need to ask my partner, I'm not sure it will work for me, or I can do it myself. Don't make it easy. If my answer is weak, keep pushing like a real buyer would.
+
+When the role-play is over, give me a review:
+1. Every place I slipped into my pattern, with the exact line I said
+2. Whether I showed the cost of waiting, and how to say it better
+3. Whether I asked clearly for the sale
+4. A stronger answer for each objection, under 3 sentences each
+5. My score out of 10, and the one thing to fix first
+
+Then offer to run it again with harder objections. Be direct. Don't soften the feedback. Simple words.`,
+      bridge: 'AI can help you practise. Inside WMHQ, you learn why you back off when buyers push back, so you stop doing it.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  calculator: 'maybes',
+  fields: [
+    { id: 't1Convos', label: 'Your 5 sales conversations', type: 'tracklist', tiers: [1], placeholder: 'First name', help: 'Tick each one once you have used your answer, not a discount.' },
+    { id: 't2Buyers', label: 'The 3 past buyers you shared your cost of waiting with', type: 'tracklist', tiers: [2], placeholder: 'First name', help: 'Tick each one once you have asked them directly if they want to go again.' },
+    { id: 't3FullPrice', label: 'Did every sales conversation this week happen at full price, with no discounts?', type: 'yesno', tiers: [3], ifNotYet: 'Your next one is at full price. Use your cost of waiting instead of a discount.' },
+    { id: 't3Where', label: 'Where you answered your most common worry this week', type: 'textarea', tiers: [3], help: 'In your content and on your sales page.' },
+  ],
+  proof: ['Post your cost of waiting line and how you will answer your number one worry before buyers ask.'],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -811,7 +866,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : number === 5 ? ACTION_05 : number === 6 ? ACTION_06 : number === 7 ? ACTION_07 : number === 8 ? ACTION_08 : number === 9 ? ACTION_09 : number === 10 ? ACTION_10 : number === 11 ? ACTION_11 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

@@ -28,6 +28,19 @@ const QUESTIONS: { q: string; a: [string, P][] }[] = [
   { q: 'What did you spend the most time on?', a: [['Making my posts, pages or graphics look right.', 'perfectionist'], ['Creating content that teaches but doesn’t sell.', 'hider'], ['Checking my DMs, hoping someone would ask.', 'waiter'], ['Writing and rewriting my messages.', 'over']] },
 ]
 
+/** The member's pattern from Action 10 (manual pick wins over the quiz), or null. */
+export function patternFor(fields: Record<string, string | string[]>) {
+  const str = (k: string) => (typeof fields[k] === 'string' ? (fields[k] as string) : '')
+  const manual = str('manualPattern') as P
+  if (manual && manual in PATTERNS) return PATTERNS[manual]
+  const answered = QUESTIONS.filter((_, i) => str(`q${i + 1}`)).length
+  if (answered < QUESTIONS.length) return null
+  const scores = Object.fromEntries(ORDER.map((p) => [p, 0])) as Record<P, number>
+  QUESTIONS.forEach((_, i) => { const v = str(`q${i + 1}`) as P; if (v in scores) scores[v]++ })
+  const top = Math.max(...Object.values(scores))
+  return PATTERNS[ORDER.find((p) => scores[p] === top)!]
+}
+
 export default function PatternQuiz({ actionId }: { actionId: string }) {
   const { state, setAction } = useStore()
   const f = progressOf(state, actionId).fields
