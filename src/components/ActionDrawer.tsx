@@ -60,7 +60,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
           </header>
 
           {/* 3. Why */}
-          <Section title="Why this matters"><p className="text-muted">{a.why}</p></Section>
+          <Section title="Why this matters"><p className="whitespace-pre-line text-muted">{a.why}</p></Section>
 
           {a.help && <HelpBox help={a.help} />}
 
@@ -168,6 +168,19 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
     return (
       <Field label={f.label} help={f.bind ? `${f.help ? f.help + ' ' : ''}Also updates your challenge setup.` : f.help} htmlFor={f.type === 'tier' ? undefined : fid}>
         {input}
+        {f.copyFrom && (() => {
+          const src = state.actions[f.copyFrom.action]?.fields[f.copyFrom.field]
+          const text = typeof src === 'string' ? src.trim() : ''
+          return text
+            ? <button type="button" className="btn-ghost !px-3 !py-1.5 text-xs" onClick={() => write(text)}><Copy size={14} /> {f.copyFrom.label}</button>
+            : <p className="text-sm text-muted">Nothing saved in {f.copyFrom.label.replace(/^Paste from /, '')} yet. You can type it here instead.</p>
+        })()}
+        {f.examples && (
+          <details className="rounded-xl bg-bg px-3 py-2">
+            <summary className="cursor-pointer text-sm font-semibold">See examples</summary>
+            <ul className="mt-2 space-y-2 text-sm text-muted">{f.examples.map((e) => <li key={e.label}><span className="font-semibold text-ink">{e.label}:</span> {e.text}</li>)}</ul>
+          </details>
+        )}
         {f.compose && (
           <button type="button" className="btn-ghost !px-3 !py-1.5 text-xs" onClick={() => write(f.compose!.replace(/\{(\w+)\}/g, (_, k: string) => {
             const v = p.fields[k]

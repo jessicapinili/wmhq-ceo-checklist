@@ -18,6 +18,10 @@ export interface FieldDef {
   tiers?: TierId[]
   /** Template like "I help {who} get {want}" — adds a button that fills this field from other answers. */
   compose?: string
+  /** Adds a button that copies an answer from an earlier action, e.g. { action: 'a02', field: 'buyerSentence' }. */
+  copyFrom?: { action: string; field: string; label: string }
+  /** Worked examples shown in a small "See examples" dropdown under the field. */
+  examples?: { label: string; text: string }[]
 }
 
 /** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */

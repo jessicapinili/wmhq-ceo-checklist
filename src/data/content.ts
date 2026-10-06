@@ -149,6 +149,87 @@ No generic answers. Then write: I help [who] get [what they want] without [what 
   resources: [],
 }
 
+const ACTION_03: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You have one clear offer, a price, and a one-liner that makes people want to buy.',
+  description: 'Turn what you sell into one clear offer that is easy to say yes to. Know the result they get, what is included, why they should buy now, how to make it low risk, and what it costs.',
+  why: `Your product or service is what you deliver. Your offer is how you package it and explain it. They are not the same thing, and the difference is what gets people to buy.
+
+One product can be many offers. A candle maker can sell one candle, or a “Sleep Better Kit” with a candle, a pillow spray and a bedtime guide. A personal trainer can sell single sessions, or a “Wedding Ready in 12 Weeks” package. Same product, different offer, very different sales.
+
+A strong offer has four things: a clear result, real value, a reason to buy now, and low risk. When all four are there, saying no feels harder than saying yes.`,
+  checklist: [
+    'Paste your buyer sentence from Action 02',
+    'Choose the product or service you will sell',
+    'Write the result they get',
+    'List what is included',
+    'Give them a reason to buy now',
+    'Make it low risk to say yes',
+    'Set your price',
+    'Write your offer one-liner',
+    'Complete your tier requirement',
+    'Test your payment or booking link',
+  ].map((label, i) => ({ id: `a03-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Build one offer only, not three. Then share your one-liner with 3 people who match your buyer. Ask them, “Would you buy this? What would stop you?” Change the offer based on what they say.',
+    2: 'Fix the offer you have sold before so people buy it again. Look at what past clients or customers bought, and add a reason to come back, such as a next step, a refill, a monthly option or a bundle. Share the new one-liner with 2 past buyers.',
+    3: 'Sharpen the offer that already brings in the most cash. Choose one move: raise the price, add a higher-priced option, or bundle it into something bigger. Write down which move you chose and how much extra cash it could bring in over 60 days.',
+  },
+  help: {
+    inWmhq: { line: 'Open the One Liner Builder in the WMHQ Tools hub. Enter your answers from the workspace below, and it builds your one-liner for you.', linkLabel: 'Open WMHQ Tools', url: WMHQ_TOOLS_URL },
+    notInWmhq: {
+      line: 'Copy this prompt into ChatGPT, Claude, or any AI you use. Fill in the brackets first.',
+      prompt: `I sell [your product or service] to [paste your buyer sentence]. Interview me to build one offer they would find hard to refuse. Ask one question at a time. If my answer is vague or could apply to anyone, push back.
+
+Find out:
+1. The clear result they get
+2. What is included
+3. Why they should buy now
+4. How to make it low risk to say yes
+5. The price
+
+Then write my offer one-liner in this format: [Offer name] helps [who] [get result] in [time] without [what they are worried about]. Give me 3 versions. Use simple words.`,
+      bridge: 'AI can help you get the facts down. Inside WMHQ, you get the full training and tools for every action in this challenge.',
+      joinLabel: 'Join WMHQ',
+      joinUrl: JOIN_WMHQ_URL,
+    },
+  },
+  fields: [
+    // Tier-specific workspaces
+    { id: 't1Feedback', label: 'Who you shared it with, and what they said', type: 'list', tiers: [1], placeholder: 'Name: would they buy? What would stop them?', help: 'Share your one-liner with 3 people who match your buyer. Add one line per person.' },
+    { id: 't1Changes', label: 'What you changed based on their answers', type: 'textarea', tiers: [1] },
+    { id: 't2Bought', label: 'What past clients or customers bought', type: 'textarea', tiers: [2] },
+    { id: 't2ComeBack', label: 'Your reason to come back', type: 'textarea', tiers: [2], help: 'Such as a next step, a refill, a monthly option or a bundle.' },
+    { id: 't2Shared', label: 'The 2 past buyers you shared it with, and what they said', type: 'list', tiers: [2], placeholder: 'Name: what they said' },
+    { id: 't3Offer', label: 'The offer that brings in the most cash', type: 'text', tiers: [3] },
+    { id: 't3Move', label: 'The move you chose', type: 'textarea', tiers: [3], help: 'Raise the price, add a higher-priced option, or bundle it into something bigger.' },
+    { id: 't3Extra', label: 'Extra cash it could bring in over 60 days', type: 'currency', tiers: [3] },
+    // Shared workspace
+    { id: 'buyerSentence', label: 'Your buyer sentence', type: 'textarea', help: 'Paste it from Action 02.', copyFrom: { action: 'a02', field: 'buyerSentence', label: 'Paste from Action 02' } },
+    { id: 'product', label: 'What product or service are you selling?', type: 'text', help: 'Just name it plainly, like “1:1 coaching”, “a skincare set” or “an online course”.' },
+    { id: 'result', label: 'What result do they get?', type: 'textarea', help: 'What is different for them after? “Sleeps through the night”, not “better sleep”.' },
+    { id: 'included', label: 'What is included?', type: 'list', placeholder: 'e.g. 4 x 60-minute sessions', help: 'List everything they get, such as sessions, items, bonuses or support.' },
+    { id: 'buyNow', label: 'Why should they buy now?', type: 'textarea', help: 'A deadline, limited spots, a launch bonus, or a season like summer or Christmas.' },
+    { id: 'lowRisk', label: 'How do you make it low risk?', type: 'textarea', help: 'A guarantee, a payment plan, a trial, or a smaller first step.' },
+    { id: 'price', label: 'What is the price?', type: 'currency', bind: 'offerPrice' },
+    { id: 'oneLiner', label: 'Your offer one-liner', type: 'textarea', placeholder: '[Offer name] helps [who] [get result] in [time] without [what they are worried about].',
+      help: 'Fill in: [Offer name] helps [who] [get result] in [time] without [what they are worried about].',
+      examples: [
+        { label: 'Product', text: 'The Calm Pup Plan helps owners of anxious rescue dogs get a relaxed dog on walks in 4 weeks, without harsh training methods.' },
+        { label: 'Service', text: 'The Tax Time Rescue helps tradies with messy receipts get their tax return lodged in 7 days, without spending their weekends sorting paperwork.' },
+        { label: 'Info', text: 'The First Ten Thousand Course helps new Etsy sellers get their first 100 orders in 90 days, without paying for ads.' },
+      ] },
+    { id: 'payLink', label: 'Payment or booking link', type: 'url', placeholder: 'https://', help: 'Open it yourself and check it works before anyone else uses it.', copyFrom: { action: 'a01', field: 'payLink', label: 'Paste from Action 01' } },
+  ],
+  proof: [
+    'Your offer one-liner',
+    'Your price',
+    'Your tier requirement: the feedback you got, the past buyers you shared it with, or the move you chose and the extra cash it could bring in',
+    'A screenshot showing your payment or booking link works',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -173,7 +254,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)
