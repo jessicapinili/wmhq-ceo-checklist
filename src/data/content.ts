@@ -230,6 +230,49 @@ Then write my offer one-liner in this format: [Offer name] helps [who] [get resu
   resources: [],
 }
 
+const ACTION_04: Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> = {
+  placeholder: false,
+  outcome: 'You know exactly how many sales you need, and how many people need to see your offer each week to get them.',
+  description: 'Work backwards from your milestone to find your numbers. Know how many sales you need, how many people need to see your offer to get those sales, and how far you are from that today.',
+  why: `Most people set a goal and then just hope. Working backwards turns your goal into a weekly number you can act on. If you need 2 sales and 1 in 10 people buy, you need 20 real conversations. That is something you can do this week.
+
+Views, likes and followers do not count here. Only people who are looking at your offer count. That means they landed on your sales page, sent you a DM about it, booked a call, or made an enquiry.`,
+  checklist: [
+    'Check your tier and price (pulled from Actions 01 and 03)',
+    'Set your sales target',
+    'Choose how people buy from you',
+    'Set your conversion rate (or use the starting guess)',
+    'Enter how many people see your offer now',
+    'Read your gap',
+    'Write your weekly number',
+  ].map((label, i) => ({ id: `a04-c${i + 1}`, label })),
+  tierRequirements: {
+    1: 'Your target is 1 sale. Use the starting guess for your conversion rate. Your job is to find out how many conversations you need, and to book the first 3 in your calendar this week.',
+    2: 'Set how many repeat sales you want in 60 days, at least 3. Count how many past clients or customers you can contact. If that number is lower than what the calculator says you need, write down where you will find more people who buy.',
+    3: 'Use your real conversion rate, not a guess. Find it in your sales page analytics, or work it out from your last 60 days by dividing your sales by the number of people who saw your offer. Then write the one lever you will pull first: more traffic, a better conversion rate, or a higher price.',
+  },
+  help: {
+    inWmhq: { line: 'For deeper planning beyond this challenge, use the Conversion Calculator in the WMHQ Tools hub. It lets you test different prices, rates and time frames.', linkLabel: 'Open WMHQ Tools', url: WMHQ_TOOLS_URL },
+    notInWmhq: { line: 'The calculator below has everything you need for this action.' },
+  },
+  calculator: 'reverse-engineer',
+  fields: [
+    { id: 't1Booked', label: 'Your first 3 conversations, booked this week', type: 'list', tiers: [1], placeholder: 'Who and when, e.g. Sarah, Tuesday 2pm' },
+    { id: 't2Contacts', label: 'How many past clients or customers can you contact?', type: 'number', tiers: [2], help: 'Compare this with “people need to see it” in your numbers below.' },
+    { id: 't2MorePeople', label: 'If that’s not enough, where will you find more people who buy?', type: 'textarea', tiers: [2] },
+    { id: 't3Lever', label: 'The one lever you will pull first', type: 'textarea', tiers: [3], help: 'More traffic, a better conversion rate, or a higher price. Say which one, and why.' },
+    { id: 'weekly', label: 'Your weekly number, and how you will hit it', type: 'textarea', placeholder: 'I will have 5 sales conversations a week by messaging past clients and replying to every comment.',
+      help: 'For example: “I will have 5 sales conversations a week by messaging past clients and replying to every comment.”' },
+  ],
+  proof: [
+    'Your sales target',
+    'Your weekly number: how many people need to see your offer each week',
+    'Your gap: how many more each week you need',
+    'Your tier requirement: the 3 conversations you booked, how many past buyers you can contact, or the lever you chose',
+  ],
+  resources: [],
+}
+
 function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 'title' | 'summary' | 'dueDay'> {
   const p = String(n).padStart(2, '0')
   return {
@@ -254,7 +297,7 @@ function placeholderFor(n: number): Omit<ActionDef, 'id' | 'number' | 'phase' | 
 export const ACTIONS: ActionDef[] = SEEDS.map(([number, phase, title, summary, dueDay]) => ({
   id: `a${String(number).padStart(2, '0')}`,
   number, phase, title, summary, dueDay,
-  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : placeholderFor(number)),
+  ...(number === 1 ? ACTION_01 : number === 2 ? ACTION_02 : number === 3 ? ACTION_03 : number === 4 ? ACTION_04 : placeholderFor(number)),
 }))
 
 export const actionById = (id: string) => ACTIONS.find((a) => a.id === id)

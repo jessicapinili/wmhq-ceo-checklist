@@ -27,7 +27,7 @@ export interface FieldDef {
 /** "Get help with this" box: WMHQ members get a Vault link, everyone else an AI prompt. */
 export interface HelpDef {
   inWmhq: { line: string; linkLabel: string; url: string }
-  notInWmhq: { line: string; prompt: string; bridge: string; joinLabel: string; joinUrl: string }
+  notInWmhq: { line: string; prompt?: string; bridge?: string; joinLabel?: string; joinUrl?: string }
 }
 
 export interface ActionDef {
@@ -41,6 +41,8 @@ export interface ActionDef {
   why: string
   tierIntro?: string
   help?: HelpDef
+  /** Built-in interactive tool shown at the top of the workspace. */
+  calculator?: 'reverse-engineer'
   dueDay: number // day of challenge (1–60)
   checklist: { id: string; label: string }[]
   tierRequirements: Record<TierId, string>

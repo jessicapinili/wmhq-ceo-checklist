@@ -5,6 +5,7 @@ import { useStore } from '../store'
 import type { FieldDef, HelpDef, Profile, TierId } from '../types'
 import { checkedCount, dueDate, fmtLong, progressOf, todayISO } from '../utils'
 import { StatusSelect } from './Board'
+import NumberCalculator from './NumberCalculator'
 import { Checkbox, Field, HelpTip, ListInput, NumberInput, ProgressBar, SaveIndicator, TextArea, TextInput, TierPicker } from './ui'
 
 export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplete, onRequestTier }: {
@@ -113,6 +114,7 @@ export default function ActionDrawer({ id, onClose, onNavigate, onRequestComplet
 
           {/* 6. Workspace */}
           <Section title="Your workspace" sub="Type straight in. Everything saves as you go.">
+            {a.calculator === 'reverse-engineer' && <div className="mb-6"><NumberCalculator actionId={a.id} /></div>}
             <div className="space-y-5">
               {a.fields.filter((f) => !f.tiers).map((f) => <div key={f.id}>{renderField(f)}</div>)}
             </div>
@@ -216,7 +218,7 @@ function Section({ title, sub, right, children }: { title: string; sub?: string;
 function HelpBox({ help }: { help: HelpDef }) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
-    try { await navigator.clipboard.writeText(help.notInWmhq.prompt); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* clipboard blocked */ }
+    try { await navigator.clipboard.writeText(help.notInWmhq.prompt ?? ''); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* clipboard blocked */ }
   }
   return (
     <Section title="Get help with this">
@@ -229,16 +231,20 @@ function HelpBox({ help }: { help: HelpDef }) {
         <div className="rounded-2xl border-bold border-ink/20 bg-surface p-4">
           <p className="label-caps">Not in WMHQ yet</p>
           <p className="mt-2">{help.notInWmhq.line}</p>
-          <button className="btn-primary mt-3 !px-4 !py-2" onClick={copy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy prompt</>}</button>
+          {help.notInWmhq.prompt && <button className="btn-primary mt-3 !px-4 !py-2" onClick={copy}>{copied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy prompt</>}</button>}
         </div>
       </div>
-      <details className="mt-3 rounded-2xl bg-bg p-4">
-        <summary className="cursor-pointer text-sm font-semibold">See the prompt</summary>
-        <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-muted">{help.notInWmhq.prompt}</pre>
-      </details>
-      <p className="mt-3 text-sm text-muted">{help.notInWmhq.bridge}{' '}
-        {help.notInWmhq.joinUrl && <a href={help.notInWmhq.joinUrl} target="_blank" rel="noreferrer" className="font-bold text-ink underline underline-offset-4">{help.notInWmhq.joinLabel} →</a>}
-      </p>
+      {help.notInWmhq.prompt && (
+        <details className="mt-3 rounded-2xl bg-bg p-4">
+          <summary className="cursor-pointer text-sm font-semibold">See the prompt</summary>
+          <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-muted">{help.notInWmhq.prompt}</pre>
+        </details>
+      )}
+      {(help.notInWmhq.bridge || help.notInWmhq.joinUrl) && (
+        <p className="mt-3 text-sm text-muted">{help.notInWmhq.bridge}{' '}
+          {help.notInWmhq.joinUrl && <a href={help.notInWmhq.joinUrl} target="_blank" rel="noreferrer" className="font-bold text-ink underline underline-offset-4">{help.notInWmhq.joinLabel} →</a>}
+        </p>
+      )}
     </Section>
   )
 }
