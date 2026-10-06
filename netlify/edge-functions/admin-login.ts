@@ -26,13 +26,18 @@ export default async (req: Request) => {
   }
 
   const email = normalizeEmail(body.email);
-  const password = typeof body.password === "string" ? body.password : "";
-  const expected = Netlify.env.get("ADMIN_PASSWORD") ?? "";
+  // Trim both sides: a space or line break pasted into Netlify's settings is invisible but breaks the match.
+  const password = typeof body.password === "string" ? body.password.trim() : "";
+  const expected = (Netlify.env.get("ADMIN_PASSWORD") ?? "").trim();
 
   // Small fixed delay slows down password guessing.
   await new Promise((r) => setTimeout(r, 600));
 
-  const ok = !!email && !!expected && isAdmin(email) && (await samePassword(password, expected));
+  if (!expected) {
+    return Response.json({ ok: false, error: "The admin password isn’t set up on the server yet. Add ADMIN_PASSWORD in Netlify, then redeploy." }, { status: 503 });
+  }
+
+  const ok = !!email && isAdmin(email) && (await samePassword(password, expected));
   if (!ok) return Response.json({ ok: false, error: "That email and password don't match." }, { status: 401 });
 
   const now = Date.now();
